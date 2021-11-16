@@ -1,0 +1,32 @@
+\section{Conclusion}
+\label{sec:automated_conclusion}
+
+In this chapter, we cover two types of low-cost dataset construction techniques: automation and generalist crowd-sourcing.  
+%
+The advantages of this method are cost and scalability, which is demanded by the current paradigm of neural models.   
+%
+This however comes at the expense of quality.  
+%
+A limitation of our past work in \textit{automation} is generalization: text-to-speech only has female voices and is consistently decoded, while the voices of real humans are decoded with large variations.  
+%
+Unseen data points are likely to confound a model trained on unnatural data.  
+%
+Additionally, automated data creation still depends on having quality source data, that often has to come from expert users.
+%
+In this project, we are able to record \textit{found} questions that were already written by Quizbowl experts.  
+%
+Writing hundreds of thousands of our questions would not have been tractable.
+%
+This suggests that expert design is necessary for automation, as discussed in Chapter~\ref{ch:contracat}.
+
+A limitation of generalist \textit{crowd-sourcing} is the inability to automatically quality control \textit{generated} data.  
+%
+Our work requires \textit{manual} analysis of each sentence submitted by the crowd; this is time-intensive and subject to error.  
+%
+Additionally, it requires real-time task monitoring and user exclusion as otherwise malicious users can quickly contribute a large part of your crowd-sourced task.  
+%
+There is no full-proof way to ensure quality in tasks involving crowd-sourcing \textit{generation}.
+%
+However, this method seems to generate more diverse and lengthy sentences than a comparable automation technique.   
+%
+One way to handle the quality control issue is by using an expert for quality assessment, which we discuss in Chapter~\ref{ch:hybrid}. 

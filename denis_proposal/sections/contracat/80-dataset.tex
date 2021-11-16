@@ -1,0 +1,31 @@
+\section{Our Dataset in Context}
+
+Addressing discourse phenomena is important for high-quality \abr{mt}.  
+%
+Apart from document-level coherence and cohesion, anaphoric pronoun translation has proven to be  an important testing ground for the ability of context-aware \nmt{} to model discourse. 
+%
+Anaphoric pronoun translation is the focus of several works in context-aware \nmt{}~\citep{bawden-etal-2018-evaluating,voita2018anaphora,stojanovski-fraser-2018-coreference,miculicich2018documentnmt,voita2019good,maruf2019selective}. 
+
+\citet{bawden-etal-2018-evaluating} manually create such a contrastive challenge set for English$\rightarrow$French pronoun translation. 
+%
+ContraPro~\citep{mueller2018} follows this work, but creates the challenge set in an automatic way. 
+%
+We show that making small variations in ContraPro substantially changes the accuracy scores, precipitating our new dataset.
+
+
+\citet{jwalapuram-etal-2019-evaluating} propose 
+a model for pronoun translation evaluation 
+trained on pairs of sentences
+consisting of the reference and a system output with differing pronouns.
+%
+However, as \citet{guillou-hardmeier-2018-automatic} point out, this fails to take into account that often there is not a 1:1 correspondence between pronouns in different languages and that a system translation may be
+correct
+despite not containing the exact
+pronoun in the reference, and incorrect even if containing the pronoun in the reference, because of differences in the translation of the referent.
+%
+Moreover, introducing a separate model which needs to be trained before evaluation adds an extra layer of complexity in the evaluation setup and makes interpretability more difficult. 
+In contrast, templates can easily be used to pinpoint specific issues of an \nmt{} model.
+%
+Our templates follow previous work \citep{ribeiro-etal-2018-semantically,mccoy2019right,ribeiro2020beyond}
+where similar tests are proposed for diagnosing \textsc{nlp} models.
+

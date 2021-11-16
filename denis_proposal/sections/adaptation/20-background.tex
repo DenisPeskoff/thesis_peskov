@@ -1,0 +1,68 @@
+\section{Using Cultural Experts for Translation}
+\label{sec:propmod}
+Chapter~\ref{ch:hybrid} proposes a method to evaluate machine translation models and in turn data.   
+%
+%MOVED TO earlier chapter %If we can establish that neural models are shallow in their understanding of a task, we should be able to establish that current auto-generated or crowd-sourced datasets are insufficient in quality.
+%
+The major limitation of the work is that the crowd-sourced workers generate less authentic sentences than the experts.  
+%
+How then can we generate data at scale, but with a level of reliability? 
+
+Adaptation is such a task that combines our past work in Question Answering, with our proposed work in Machine Translation and is a good, difficult test-bed.  
+%
+Since the gold-standard for this task is subjective and paramount, this project posits two questions about experts. 
+%
+Can relying on \textit{human-verified} datasets, specifically WikiData, set a higher standard for machine translation of question answering than is now possible?  
+%
+Additionally, how do you verify that a generative task with many possible options is providing a reasonable answer?
+
+A challenge for modern data-hungry natural language processing
+(\abr{nlp}) techniques is to replicate the impressive results for
+standard English tasks and datasets to other languages.
+%
+Literally translating text into the target language is the most obvious solution.  
+%
+This can be the best option for tasks such as sentiment
+analysis~\citep{araujo-16}, but for other tasks such as question
+answering (\abr{qa}), literal translations might miss cultural nuance
+if you directly translate questions from English to German to provide
+additional training data.\footnote{Creating additional training data in any capacity---sequence to sequence generation, creating multi-lingual embeddings, transfer learning---requires an authoritative oracle in itself.}
+%
+While this might allow \abr{qa} systems to answer questions about
+baseball and \entity{Tom Hanks} in German, it does not fulfill the promise of a
+smart assistant answering a culturally-situated question about \entity{Oktoberfest}.
+
+This alternative is called cultural \emph{adaptation}.
+%
+If you put a German sentence into a translation system, you might get
+literal, correct translation like ``Mr. M\"uller grabbed a Berliner
+from Dietsch at the Hauptbahnhof before jumping on the ICE''.
+%
+The cultural context of Germany is necessary to understand this example.
+
+An extreme adaptation could render the sentence as
+``Mr. Miller grabbed a Boston Cream from the Dunkin' Donuts in Grand
+Central before jumping on the Acela'', elucidating that M\"uller
+literally means ``Miller'', that Dietsch (like Dunkin' Donuts) is a
+mid-range purveyor of baked goods, both Berliners and Boston Creams
+are filled sweet pastries named after a city, and that the ICE is the
+(slightly) ritzier inter-city train.
+%
+Humans translators use this type of adaptation frequently when it is appropriate to the translation.
+
+Because adaptation is understudied, we leave the full translation task
+to future work.
+%
+Instead, we focus on the task of cultural adaptation of entities: given an
+entity in English, what is the corresponding entity in a target
+language.
+%
+For example, the German \entity{Anthony Fauci}, the leading medical expert on coronavirus in the country, is \entity{Christian Drosten}.
+%
+Most Americans would be unfamiliar with this knowledge of German culture.
+%
+Hence, automatic adaptation could be used in natural language processing for machine translation and indirectly for generating new question answering datasets and education.   
+%
+Can machines reliably find these analogs with minimal supervision?
+%
+Answering this question requires working with experts to create a gold standard for this subjective analogy.  

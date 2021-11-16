@@ -1,0 +1,78 @@
+2020_acl_diplomacy
+/Users/dpeskov/anaconda3/envs/asr/bin/python3
+No RScripts!
+Running python3
+1 Austria winter
+1 England winter
+1 France winter
+1 Germany winter
+1 Italy winter
+1 Russia winter
+1 Turkey winter
+2 Austria winter
+2 England winter
+2 France winter
+2 Germany winter
+2 Italy winter
+2 Russia winter
+2 Turkey winter
+3 Austria winter
+3 England winter
+3 France winter
+3 Germany winter
+3 Italy winter
+3 Russia winter
+4 Austria winter
+4 England winter
+4 France winter
+4 Germany winter
+4 Italy winter
+4 Russia winter
+5 Austria winter
+5 England winter
+5 France winter
+5 Germany winter
+5 Italy winter
+5 Russia winter
+6 Austria winter
+6 England winter
+6 France winter
+6 Germany winter
+6 Italy winter
+6 Russia winter
+7 Austria winter
+7 England winter
+7 Germany winter
+7 Italy winter
+7 Russia winter
+8 Austria winter
+8 England winter
+8 Germany winter
+8 Italy winter
+8 Russia winter
+9 Austria winter
+9 England winter
+9 Germany winter
+9 Italy winter
+9 Russia winter
+10 England winter
+10 Germany winter
+10 Italy winter
+10 Russia winter
+TEST {'Deceived their Victim', 'Victim Fell for Lie', 'Victim Caught a Lie', 'Victory Points'}
+   Year  Season   Player              Statistic  Value  Turn_Filter
+0     1  winter  Austria  Deceived their Victim      0         0.25
+1     1  winter  Austria    Victim Fell for Lie      0         0.25
+2     1  winter  Austria    Victim Caught a Lie      0         0.25
+3     1  winter  Austria         Victory Points      5         0.25
+4     1  winter  England  Deceived their Victim      0         0.25
+Year 1 of 10
+Year 2 of 10
+Year 3 of 10
+Year 4 of 10
+Year 5 of 10
+Year 6 of 10
+Year 7 of 10
+Year 8 of 10
+Year 9 of 10
+Year 10 of 10

@@ -1,0 +1,89 @@
+%Abstract Page
+
+\hbox{\ }
+
+\renewcommand{\baselinestretch}{1}
+\small \normalsize
+
+\begin{center}
+    \large{{ABSTRACT}}
+    
+    \vspace{3em}
+    
+\end{center}
+\hspace{-.15in}
+\begin{tabular}{ll}
+    Title of proposal: & {\large  Gathering Language Data Using Experts}     \\
+    \                                                                      \\
+                       & {\large  Denis Peskov, 2020}                   \\
+    %&                           {\large Doctor of Philosophy, 2004} \\
+    \                                                                      \\
+    Dissertation directed by:
+                       & {\large  Professor Jordan Boyd-Graber}            \\
+                       & {\large  Department of Computer Science}          \\
+                       & {\large  College of Information Studies}          \\
+                       & {\large  Language Science Center}                 \\
+                       & {\large  Institute for Advanced Computer Studies} \\
+\end{tabular}
+
+\vspace{3em}
+
+\renewcommand{\baselinestretch}{2}
+\large \normalsize
+
+
+Natural Language Processing needs substantial data to make robust predictions. 
+%
+Automatic methods, unspecialized crowds, and domain experts can be used to collect this prerequisite data.
+%
+We curate large-scale conversational and question answering \abr{nlp} datasets using these various methods. 
+
+
+A low-cost, high-output approach to data creation is \textit{automation}.  
+%
+We explore this approach by creating and analyzing a large-scale audio question answering dataset through text-to-speech technology.  
+%
+%However, in Quizbowl questions are read at an unusually fast pace and involve highly technical and multi-cultural words causing a disparity between automation and reality.  
+%
+We conclude that the cost-savings and scalability of automation come at the cost of data quality and naturalness.  
+
+Human input can provide this degree of naturalness, but is limited in scale. 
+%
+Hence, large-scale data collection is frequently done through \textit{crowd-sourcing}.
+%
+A question-rewriting task, in which a long information-gathering conversation is used as source material for many stand-alone questions, shows the limitation of using this methodology for \textit{generating} data.
+%; however, these have limitations as noted in two question answering projects: question-rewriting and audio question answering.     
+%
+%Generating data through crowd-sourcing poses a serious quality control challenge, since 
+Standard inter-annotator agreement metrics, while useful for \textit{annotation}, cannot easily evaluate \textit{generated} data, causing a serious quality control issue.  
+%
+This problem is observed while formalizing a question-rewriting task; certain users provide low-quality rewrites---removing words from the question, copy and pasting the answer into the question---if left unsupervised.  
+%
+We automatically prevent unsatisfactory submissions through an interface, but the quality control process still requires manually reviewing over 5,000 questions.  
+
+Certain users provide more reliable annotations and generations than others, which can be used to improve the quality control process.  
+%
+%We mitigate the quality control issues identified in crowd-sourcing and automation through exploring
+\textit{Hybrid} solutions pair potentially unreliable and unverified users in the crowd with experts.  
+%
+As an example, Amazon customer service agents are used for curation and annotation of goal-oriented 81,000 conversations across six domains.  
+%
+By grounding the conversation with a reliable conversationalist---the Amazon agent---we create untemplated conversations and reliably identify low-quality conversations.    
+%
+The sentences generated from crowd workers are less natural and diverse than those from experts.   
+
+Therefore, we posit that exclusively using domain \textit{experts} for data generation can create novel and reliable \abr{nlp} datasets. 
+%
+In a study on the game of Diplomacy, which investigates the language of trust and deception, Diplomacy community members generate a corpus of 17,000 messages that are self-annotated while playing a game. 
+%
+The language is varied in length, tone, vocabulary, punctuation, and even emojis.
+%
+Additionally, we create a real-time self-annotation system that annotates deception in a manner not possible through  crowd-sourced or automatic methods.  
+%Annotation based on a user's perception can change ex-post-facto; a duped user may in retrospect conclude that they had expected a lie when reality suggests otherwise.   
+ %
+%Hence, real-time annotation by the original user is integral to this task.  
+ %
+We propose future work that leverages experts to create a new machine translation task: \textit{cultural adaptation}.  
+ %
+%Identifying relevant communities for a specific NLP task, and providing a service to them can set new standards for NLP corpora.  
+ 

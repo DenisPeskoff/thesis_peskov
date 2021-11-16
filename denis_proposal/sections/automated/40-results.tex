@@ -1,0 +1,103 @@
+\section{Results}
+\label{sec:exp}
+
+
+Achieving 100\% accuracy on this dataset is not a realistic goal, as
+not all test questions are answerable (specifically, some answers do
+not occur in the training data and hence cannot be
+learned by a machine learning system).  Baselines for the \textsc{dan} (Table~\ref{table:combination_results}) establish realistic goals: a \textsc{dan} trained and evaluated on the \textit{same train and dev set}, only in the original
+non-\textsc{asr} form, correctly predicts 54\% of the
+answers. Noise drops this to 44\% with the best \textsc{ir} model and down
+to $\approx30\%$  with neural approaches.
+
+
+Since the noisy data quality makes full recovery unlikely, we view any
+improvement over the neural model baselines as recovering valuable
+information.  At the question-level, strong \textsc{ir} outperforms
+the \textsc{dan} by around 10\%.
+% We evaluate on the best confidence model, and the best expansion.
+
+Since \textsc{ir} can avoid all the noise while benefiting from additional independent data points, it
+scales as the length of data increases.  There is additional motivation to investigate this task at the
+sentence-level.  Computers can beat humans at the game by knowing certain questions immediately; the first sentence of the \qb{} question serves as a proxy for this threshold.  Our proposed combination of forced decoding with a neural model led to the highest test accuracy results and outperforms the \textsc{ir} one at the sentence level.
+
+%RESOLVED \jbgcomment{remind reader about why multi-sentence is important (it's a quirk of one of our datasets).  Also make it clear which dataset you're talking about (or if it applies to both).}
+
+A strong \textsc{tf-idf} \textsc{ir} model can top the best neural model at the multi-sentence question level in \qb{}; multiple sentences are important because they progressively become easier to answer in competitions.  However, our models improve accuracy on the shorter first-sentence level of the question.  This behavior is expected since \textsc{ir} methods are explicitly designed to disregard noise and can pinpoint the handful of unique words in a long paragraph; conversely they are less accurate when they extract words from a single sentence.
+
+
+
+
+\begin{table}[t]
+	
+	%resolved  \jbgcomment{Make sure to use style checker generally.  ``lead to improvements'' is vague and verbose.  Favor verbs to nouns.}
+	\small
+	\centering
+	\begin{tabular}{ l c c c  c c c c}
+		&& \multicolumn{2}{c}{\qb{}}  &&  \multicolumn{2}{c}{Jeopardy!}   \\
+		\cmidrule(lr) {2-5}   	\cmidrule(lr) {6-7}
+		&\multicolumn{2}{c}{Synth}& \multicolumn{2}{c}{Human} & Synth & Human\\
+		\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-6}  \cmidrule(lr){7-7}
+		Model & \multicolumn{1}{c}{Start}&{End}& \multicolumn{1}{c}{Start}&{End} & & \\
+		\cmidrule(lr) {1-7}
+		\multicolumn{6}{l}{\textbf{Methods Tested on Clean Data}}	\\
+		\textsc{ir} & 0.064	& 0.544	& 0.400 & 1.000	 & 0.190 &0.050  \\
+		\dan{} & 0.080 & 0.540 &0.200 & 1.000 &0.236 & 0.033 \\
+		\cmidrule(lr) {1-7}
+		\multicolumn{6}{l}{\textbf{Methods Tested on Corrupted Data}} \\
+		\textsc{ir} base & 0.021 & 0.442 & 0.180 & 0.560 & 0.079 & 0.050 \\
+		\dan{} &  0.035 & 0.335 & 0.120 & 0.440  & 0.097 & 0.017  \\
+		\textsc{fd}   & 0.032 & 0.354 & 0.120  & 0.440 & 0.102 & 0.033  \\
+		Confidence  & 0.036 &  0.374 & 0.120  & 0.460 & 0.095  & 0.033 \\
+		\textsc{fd}+Conf &  0.041  & 0.371  & 0.160 & 0.440  &  0.109 & 0.033  \\
+		
+
+	\end{tabular}
+		\caption{Both forced decoding (\textsc{fd}) and the best confidence model improve accuracy.  Jeopardy only has an At-End-of-Sentence metric, as questions are one sentence in length.    Combining the two methods leads to a further joint improvement in certain cases.  \textsc{ir} and \textsc{dan} models trained and evaluated on clean data are provided as a reference point for the \asr{} data.}
+	\label{table:combination_results}
+\end{table}
+
+
+\subsection{Qualitative Analysis \& Human Data}
+\label{sec:human-data}
+\begin{table}[t!]
+	\small
+	\setlength\tabcolsep{4pt}
+	\centering
+	\begin{tabularx}{\textwidth}{p{2cm}p{12cm}}
+		%	\begin{tabular}{l}
+		Speaker & Text \\
+		\midrule
+		Base & John Deydras, an insane man who claimed to be Edward II, stirred up trouble when he seized this city's Beaumont Palace.\\
+	     \rowcolor{gray!25}
+		S1 & unk an insane man who claimed to be the second unk trouble when he sees unk beaumont  $\rightarrow$ \underline{Richard\_I\_of\_England} \\
+		 \rowcolor{white}
+		S2 & john dangerous insane man who claims to be the second stirring up trouble when he sees the city's beaumont $\rightarrow$ \underline{London}\\
+		 \rowcolor{gray!25}
+		S3 & unk dangerous insane man who claim to be unk second third of trouble when he sees the city's unk palace  $\rightarrow$ \underline{Baghdad}\\
+	\end{tabularx}
+		\caption{Variation in different speakers causes different transcriptions of a question on \underline{Oxford}.  The omission or corruption of certain named entities leads to different answer predictions, which are indicated with an arrow. }
+	\label{fig:human_data}
+\end{table}
+
+
+%RESOLVED eariler in intro rework \jbgcomment{Agree with Joe that this should be foregrounded more}
+
+The synthetic dataset facilitates large-scale machine learning, but ultimately we care about performance on human data.
+For \qb{} we record questions read by domain experts at a competition.
+To account for variation in speech, we record five questions across ten different speakers, varying in gender and age; this set of fifty questions is used as the human test data.
+Table~\ref{fig:human_data} provides examples of variations.
+For Jeopardy! we manually parsed a complete episode by question.
+
+
+%\jbgcomment{``input about'' is vague.  Be direct: ``For a question on''}
+
+The predictions of the regular \textsc{dan} and the confidence version
+can differ.    As one example, input about \underline{The House on Mango Street}, which contains words like ``novel'', ``character'', and ``childhood'' alongside a
+corrupted name of the author, the regular \textsc{dan} predicts
+\underline{The Prime of Miss Jean Brodie}, while our version predicts
+the correct answer.
+%
+As another example the model in Table~\ref{fig:human_data} predicts ``London'' if ``beaumont'' and ``john'' are preserved, but ``Baghdad'' if the proper nouns, but not ``palace'' and ``city'', are lost.  
+
+

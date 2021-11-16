@@ -1,0 +1,47 @@
+% intro
+\section{Contribution and Future Work}
+\label{sec:contribution}
+
+%\jbgcomment{Previous comment still stands: What's the point of this
+ % section?  Is it to list contributions, analyze data (e.g., error
+ % analysis).  Explain this to the user at the start of the section.}
+%\jbgcomment{There are zero citations here}
+
+We introduce a dataset of sustained, natural conversations
+self-annotated for deception.
+%
+To maximize generalizability we only use minimal game state information.
+%
+However, Diplomacy is also a rich, multi-agent strategic environment;
+\newcite{paquette-19} ignore Diplomacy's rich language in
+a reinforcement learning setting.
+%
+An exciting synthesis would incorporate deception and language
+generation into an agent's policy; our data would help train such agents.
+
+Beyond playing against humans, playing with a human in the loop
+(\textsc{hitl}) resembles designs for cybersecurity
+threats~\cite{cranor2008framework},
+annotation~\cite{branson2010visual}, and language
+alteration~\cite{wallace2019trick}.
+%
+Similarly, our lie-detection models can be plugged into a
+\textsc{hitl} player interface that identifies
+deceptions to help a human detect incoming deception or to
+help develop harder-to-detect lies via adversarial
+authoring.
+
+%Suggestions about potential lies would be provided to players in real-time to avoid pitfalls.  A player may be more cautious about a particular move or the promise of an alliance, which in turn may cause players to be more honest in their sent messages.  Or perhaps the interface would help liars write better lies!  Alternatively, the data can be used to create dialog for a Diplomacy bot, although ensuring that the language is generated according to a game planner is integral.     
+
+%Probably not needed % Follow-up work can be directed specifically at the game of Diplomacy.  This task can be scoped at a general or a player-specific basis.  In the general case, the data is trained on all players but a certain one.  Then the actions for only that player are predicted.  This can be made country-specific---train on data from the majority of users playing as Turkey and test on several held out players.  This would ascertain whether linguistic cues or specific game actions are more likely to reveal an impending betrayal.  
+
+
+
+%We make several unique decisions in order to gather the data necessary for our study.  We allow real-time, rather than ex-post-facto feedback, use skilled human participants, and disambiguate successful outcomes.  
+
+%Disambiguating successful outcomes requires assumptions.  
+
+%\jbgcomment{Bots?  Have language generate as output of planner?}
+
+%Our data can be used for modeling.  Our task lends itself to a sequence-to-classification set-up.  Our input is a string of words---the users' entire message---combined with prior context.  Our prediction can be one of several options depending on motivation: the veracity perception of the opponent, the likeliness to receive a response, or a favorable outcome in the game. 
+

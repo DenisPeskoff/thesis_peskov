@@ -1,0 +1,65 @@
+\section{Evaluation by Experts }
+\label{sec:eval}
+
+The difficulty of the task merits skilled users.  
+%
+Since quality control is difficult for generation~\citep{peskov2019multi}, we need users who will answer the task accurately and without annotation artifacts.
+%
+We select five American citizens educated at American universities and five German citizens educated at German university.  
+%
+These human annotations serve as a gold standard against which we can compare our automated approaches.
+%
+To improve the user experience, we create a custom interface that:
+\begin{enumerate}[noitemsep]
+	\item describes the task and provides examples
+	\item tracks the user inputting the annotation
+	\item provides a brief summary from Wikipedia 
+	\item pre-populates from an autocomplete box \textit{a la} answer selection in \citet{wallace-19}
+\end{enumerate}
+%
+The annotation task requires roughly two hours for our users to complete. 
+%
+Our entities come from two sources: the top 500 most visited Wikipedia pages and the Veale NOC List~\citep{veale2016round}.
+%
+Wikipedia has a heavy skew towards pop culture; the top 500 pages had to be preemptively filtered to avoid being dependent on pop music and films.
+%
+The Veale NOC list is human-verified and contains a historically broader sweep of people.  
+%
+We conduct this exercise in both directions; while \entity{Berlin} is the German \entity{Washington, DC}, there is less consensus on what is the American \entity{Berlin}, as \entity{Berlin} is both the capital, a tech hub, and a film hub.  
+%
+We expect this dataset to show how
+prototypical particular examples are within a culture.
+
+\subsection{Question Adaptation}
+
+The adaptation methodology allows us to solve a downstream task: machine translation of question answering.
+%
+We need a dataset of high-quality German questions, which does not exist at the moment.  
+%
+We will work with a German trivia company to create a dataset of high-quality German questions.  
+
+Having gathered a German dataset we can automatically adapt the German questions into English.  
+%
+Conversely, we can adapt English questions~\citep{rajpurkar-16} into German.  
+%
+Experts will be used for evaluating both the content and the naturalness of the questions.  
+%
+If the quality of adapted named entities is insufficient for believable question generation, we can use a supervised learning approach to improve upon our proposed adaptation methodology.  
+
+\subsection{Summary}
+
+%jbgcomment{adaptation}
+
+We propose entity adaptation as a task.
+%
+Word2vec embeddings and WikiData can be used to figuratively---not just literally---translate entities into a different culture.   
+%
+We are interested in knowing if both methods generate reasonable candidates. 
+%
+WikiData is largely human-verified and will test if crowd-sourced information is more similar to expert decision-making than automatic embeddings.  
+%
+Additionally, we will see how interpretable our predictions are.  
+%
+For our experiments we will create and release the first adaptation dataset for which citizens of the respective countries provide annotations for popular items from English and German Wikipedia, and a part of the Veale Non-Official Characterization list.
+%
+

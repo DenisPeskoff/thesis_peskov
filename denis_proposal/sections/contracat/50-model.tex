@@ -1,0 +1,24 @@
+\section{Model}
+\label{sec:contracatmodel}
+
+% \afcomment{TODO: fix ContraPRO to be ContraPro everywhere}
+% \dscomment{Fixed, but keeping it as a reminder.}
+
+We use a transformer model (Background Section~\ref{sec:seq2seq}) for all experiments and train a sentence-level model as a baseline.
+%
+The context-aware model in our experimental setup is 
+a concatenation model~\citep{tiedemann2017neural} (\textsc{concat}) which is trained on a concatenation of consecutive sentences.
+%
+\textsc{concat} is a standard transformer model and it differs from the sentence-level model only in the way that the training data is supplied to it.\footnote{The training examples for this model are modified by prepending the previous source and target sentence to the main source and target sentence. 
+	%
+	The previous sentence is separated from the main sentence with a special token $<$SEP$>$, on both the source and target side. 
+	%
+	This also applies to how we prepare the ContraPro and \contracat{} data. 
+	%
+	We train the concatenation model on OpenSubtitles2018 data prepared in this way. 
+	%
+	We remove documents overlapping with ContraPro.}
+% We incorporate contextual information into the model by concatenating consecutive sentences~\cite{tiedemann2017neural}.   
+%
+
+

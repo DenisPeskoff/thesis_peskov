@@ -1,0 +1,34 @@
+
+
+%Another promising direction, which we do not explore in this work, is to pre-train representations on \multidogo and then fine-tune these representations on a smaller, under resourced dataset. Pre-trained language models, such as \elmo \citep{Peters:2018} and BERT \citep{devlin2018bert}, demonstrate the value of using a self supervised language modeling objective to pre-train representations for natural language processing tasks. Yet the success of supervised pre-training on the ImageNet dataset \citep{deng2009imagenet} in the computer vision literature suggests that general purpose representations can be learned via a classification task. Therefore, we believe general purpose representations can be learnt via large-scale, supervised pre-training on \multidogo.  
+
+
+\section{Conclusion}
+
+
+
+We present \multidogo, a new Wizard-of-Oz dialogue dataset that is the largest human-generated, multi-domain corpora of conversations to date.  
+%
+The scale and range of this data provides a test-bed for future work in joint training and transfer learning.  
+%
+Moreover, our comparison of sentence and turn level annotations provides insight into the effect of annotation granularity on downstream model performance.
+
+The data collection and annotation methodology that we use to gather \multidogo can efficiently scale across languages.  
+%
+Several pilot experiments aimed at collecting Spanish dialogues in the same domains have shown preliminary success in quality assessment. 
+%
+The production of a \abr{nlu} dataset with parallel data in multiple languages would be a boon to the cross-lingual research community. 
+%
+To date, cross-lingual \abr{nlu} research \citep{upadhyay2018almost, schuster2018cross} has relied on much smaller parallel corpora. 
+
+By pairing crowd-sourced labor (Chapter~\ref{ch:unspecialized}) with experts (Chapter~\ref{ch:expert}), we balance the cost, diversity, and quality of these conversations in a scalable manner. 
+%
+We show that by adopting a modular annotation strategy, the crowds can reliably \textit{annotate} dialogues at a level commensurate with trained professional annotators. 
+%
+Without any oversight, our data would be just as large, but it could not be trusted.  
+
+ However, there is a stark difference in quality of the \textit{generated} language between the crowd-sourced workers and the experts, in this case Amazon Customer Service agents.  
+ %
+ The crowd-sourced workers have a financial incentive to complete the task as quickly as possible and contribute sentences that are often prosaic, ungrammatical, or repeated.  
+ %
+ This begs the question, can we use only experts to create datasets?  And if so, will these datasets be rife with the same quality issues? 

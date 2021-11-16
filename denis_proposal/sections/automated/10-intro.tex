@@ -1,0 +1,96 @@
+
+Two cheap methods of creating large neural-scale datasets are  automatic generation of synthetic data and crowd-sourcing generalist users.
+%
+In this chapter, both datasets deal with paragraph-length conversations and technical language, which are real-life challenges for digital assistants. 
+%
+We discuss a large audio dataset created with Text-To-Speech technology, and the limitations thereof beginning with Section~\ref{sec:auto}.\footnote{Denis Peskov, Joe Barrow, Pedro Rodriguez, Graham Neubig, and Jordan Boyd-Graber. 2019. Mitigating noisy inputs for question answering. In Conference of the International Speech Communication Association \\ Peskov is responsible for the data creation, the gathering of users from users, running the neural models, figure and table design, and majority of paper writing.} 
+%
+We discuss crowd-sourcing for \textit{generating} questions based on their context in Section~\ref{sec:crowdqa}.\footnote{Ahmed Elgohary, Denis Peskov, and Jordan Boyd-Graber. 2019.  Can You Unpack That? Learning to Rewrite Questions-in-Context. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing. 5920–5926 \\
+	Peskov is responsible for manual quality control in the data collection process, analysis of the data and model predictions, part of paper writing, and figure+table design. \\ }
+%
+These are two methods that are meant to create large-scale datasets, but at the expense of naturalness or quality.  
+%
+While they are able to create large datasets---hundreds of thousands of questions in this Chapter---the quality control process is manual, time-consuming, and subject to error.  
+%
+Both projects require having an expert, a trivia player and native English speaker, verify the generated data. 
+
+\section{Part 1: Automated Data Creation for Question Answering}
+\label{sec:auto}
+
+Progress on question answering (\textsc{qa}) has claimed
+ human-level accuracy.  However, most factoid \textsc{qa}
+models are trained and evaluated on clean text input, which becomes
+noisy when questions are spoken due to Automatic Speech Recognition
+(\asr{}) errors.
+%
+This consideration is disregarded in trivia match-ups between machines
+and humans: \textsc{ibm} Watson~\citep{Ferrucci10watson} on Jeopardy!
+and \qb{} matches between machines and trivia
+masters~\citep{Boyd-Graber:Feng:Rodriguez-2018} provide text data for
+machines while humans listen.  
+%
+A fair assessment of an Artificial Intelligence's ability to answer human trivia questions would subject the machine to speech input, akin to how typical human would process sound.~\footnote{An audibly impaired person would be delivered questions in a non-audio medium, but would still experience a cognitive delay, unlike a machine.}
+
+Hence, computers should be provided with the same audio input that a human would hear.  
+%
+In order to process the audio and answer the question, the computer needs a model to decode the audio into textual format.  
+%
+Unfortunately, there are no large \textit{spoken} corpora of factoid
+questions with which to train models; text-to-speech software can be used as a method for generating training data at scale for question answering models (Section~\ref{sec:data}).
+%
+Although synthetic data is less realistic than true human-spoken
+questions it easier and cheaper to collect at scale, which is
+important for training.  
+%
+These synthetic data are still useful; in
+Section~\ref{sec:human-data}, models trained on synthetic data are
+applied to human spoken data from \qb{} tournaments and Jeopardy!
+
+Noisy \asr{} is particularly challenging for \textsc{qa} systems
+(Figure~\ref{fig:noise_analysis}).
+While humans and computers might know the title of a ``revenge novel
+centering on Edmund Dantes by Alexandre Dumas'', transcription errors
+may mean deciphering ``novel centering on edmond dance by alexander
+\unk{}'' instead.   Dantes and Dumas are low-frequency words in the English language and hence likely to be misinterpreted by a generic \asr{} model; however, they are particularly important for answering the question.  Additionally, the introduction of distracting words (e.g., ``dance'') causes \textsc{qa} models to make errors~\citep{jia-liang-2017-adversarial}.
+Section~\ref{sec:noise} characterizes the signal in this noise: key
+terms like named entities are often missing, which is
+detrimental for \textsc{qa}.
+
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\linewidth]{\figfile{noise_analysis_v3_notitle.pdf}}
+	\caption{\textsc{asr} errors on \textsc{qa} data:
+          original spoken words (top of box) are garbled (bottom).  While many words become
+          into ``noise''---frequent words or the unknown
+          token---consistent errors (e.g.,
+          ``clarendon'' to ``clarintin'') can help downstream systems.  
+          Additionally, words reduced to \unk{} (e.g., ``kermit'') can
+          be useful through forced decoding into the closest
+          incorrect word (e.g., ``hermit'' or even
+          ``car'').}
+
+	\label{fig:noise_analysis}
+\end{figure}
+
+
+
+
+
+Previous approaches to mitigate \asr{} noise for answering mobile
+queries~\citep{mishra2010qme} or building bots~\citep{leuski2009building} typically use unsupervised methods, such as term-based information retrieval.
+ Our datasets for training and evaluation can produce \textit{supervised} systems that directly answer spoken questions. Machine translation~\citep{sperber17emnlp} also uses \asr{} confidences; we evaluate similar methods on \textsc{qa}.
+
+
+Specifically, some accuracy loss from noisy inputs can be mitigated
+through a combination of forcing unknown words to be decoded as the closest option
+(Section~\ref{sec:forced-decoding}), and incorporating the uncertainties of
+the \asr{} model directly in neural models (Section~\ref{sec:conf-dan}).  
+%
+The forced decoding method reconstructs missing terms by using terms audibly similar to the transcribed input.
+%
+Word-level confidence scores incorporate uncertainty from the \asr{}
+system into a Deep Averaging Network, introduced earlier in Background Section~\ref{sec:dan}.
+%
+Section~\ref{sec:exp} compares these methods against baseline methods
+on our synthetic and human speech datasets for Jeopardy! and \qb{}.

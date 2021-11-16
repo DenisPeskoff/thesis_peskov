@@ -1,0 +1,28 @@
+\section{Do Androids Dream of Coreference Translation Pipelines?}
+\label{sec:corefpipeline}
+
+Imagine a hypothetical coreference pipeline that generates a pronoun in a target language, as illustrated in  Table~\ref{tab:corefpipeline}.
+%
+\textbf{First}, markables (entities that can be referred to by pronouns) are tagged in the source sentence (we restrict ourselves to concrete entities as concepts are incompatible with many verbs). 
+%
+Then, the subset of animate entities are detected, and human entities are separated from other animate ones (since \textit{it} cannot refer to a human entity).
+%
+\textbf{Second}, coreferences are resolved in the source language. 
+%
+This entails addressing phenomena such as world knowledge, pleonastic \textit{it}, and event references.  
+%
+\textbf{Third}, the pronoun is translated into the target language. This requires selecting the correct gender given the referent (if there is one), and selecting the correct grammatical case for the target context (e.g., accusative, if the pronoun is the grammatical object in the target language sentence).
+
+%Thus, the
+This idealized
+pipeline would produce the correct pronoun in the target language. 
+%
+The coreference steps resemble the rule-based approach implemented in Stanford Core\textsc{nlp}'s CorefAnnotator~\citep{raghunathan2010multi,lee2011stanford}. 
+%
+However, \nmt{} models are unable to decouple
+the individual steps
+of this pipeline. 
+%
+We propose to isolate each of these 
+steps through targeted examples.
+

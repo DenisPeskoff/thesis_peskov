@@ -1,0 +1,64 @@
+\section{Why is Coreference Resolution Relevant?}
+\label{sec:mtbg}
+
+
+Evaluating discourse phenomena is an important first step in evaluating \abr{mt}.  
+%
+Apart from document-level coherence and cohesion, anaphoric pronoun translation has proven to be  an important testing ground for the ability of context-aware \nmt{} to model discourse. 
+%
+Anaphoric pronoun translation is the focus of several works in context-aware \nmt{}~\citep{bawden-etal-2018-evaluating,voita2018anaphora,stojanovski-fraser-2018-coreference,miculicich2018documentnmt,voita2019good,maruf2019selective}. 
+
+
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{p{4cm} p{8cm}}
+		\tikzmark{a} Start:  \newline Original sentence & The cat and the actor were hungry.  
+		\newline
+		It (?) was hungrier. \\
+		\hline
+		\tikzmark{b} Step 1: \newline  \stepone{} & The \textbf{cat} and the \textbf{actor} were hungry.  
+		\newline
+		It (?) was hungrier. \\
+		\hline
+		\tikzmark{c} Step 2: \newline  \steptwo{} & The cat and the actor were hungry. 
+		\newline
+		\textbf{It} was hungrier. \\
+		\hline
+		\tikzmark{d} Step 3: \newline \stepthree{} & Der Schauspieler und die Katze waren hungrig.
+		\newline
+		Er / \textbf{Sie} / Es   war hungriger.  \\
+	\end{tabular}
+	\begin{tikzpicture}[overlay, remember picture, yshift=.25\baselineskip, shorten >=2pt, shorten <=2pt, very thick]
+	\draw [orange, ->] ({pic cs:a}) [bend right] to ({pic cs:b});
+	\draw [orange, ->] ({pic cs:b}) [bend right] to ({pic cs:c});
+	\draw [orange, ->] ({pic cs:c}) [bend right] to ({pic cs:d});
+	
+	\end{tikzpicture}
+	
+	\caption{A hypothetical \textsc{cr} pipeline that sequentially resolves and translates a pronoun.}
+	\label{tab:corefpipeline}
+\end{table}
+
+
+The choice of an evaluation metric for \textsc{cr} is nontrivial. 
+%
+\textsc{bleu}-based evaluation is insufficient for measuring improvement in \textsc{cr}~\citep{hardmeier2012discourse} 
+% and has led to custom variation
+without carefully selecting or modifying test sentences for pronoun translation~\citep{voita2018anaphora,stojanovski-fraser-2018-coreference}.
+%
+Alternatives to \textsc{bleu} include $F_1$, partial credit, and oracle-guided approaches~\citep{hardmeier2010modelling,guillou-hardmeier-2016-protest,miculicich-werlen-popescu-belis-2017-validation}. 
+%
+However, \citet{guillou-hardmeier-2018-automatic} show that these metrics can miss important cases and propose semi-automatic evaluation. 
+%
+In contrast, our evaluation will be \textit{completely} automatic.  
+%
+We focus on scoring-based evaluation~\citep{sennrich-2017-grammatical}, which works by creating contrasting pairs and comparing model scores. 
+%
+Accuracy is calculated as how often the model chooses the correct translation from a pool of alternative incorrect translations.
+%
+This is an evaluation metric applicable for multiple forms of \textit{generated} \nlp{} data.
+
+Our work is related to adversarial datasets for testing robustness used in  Natural Language Processing tasks such as  studying gender bias~\citep{zhao2018gender,rudinger2018gender,stanovsky-etal-2019-evaluating}, natural language inference \citep{glockner-etal-2018-breaking} and classification \citep{wang2019natural}.
+% wang2019 mentions works about synonym replacement 
+

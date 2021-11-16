@@ -1,0 +1,993 @@
+% intro
+\chapter{Natural Language Processing Depends on Data}
+\label{ch:background}
+
+In this chapter, we discuss the history of \nlp{}, the \nlp{} tasks relevant for our work, and the three types of data collection discussed in this proposal.
+
+The history of \nlp{} outlined in Section~\ref{sec:bghistory} explains the current dependence on data.  
+%
+Developments in the fields of statistics and linguistics led to the use of raw training data for building of language models.
+%
+But each \nlp{} task requires its own bespoke training data, such as parallel training data for machine translation.    
+%
+%Our work does not exist in a vacuum, and certain background material on \nlp{} must be introduced.  
+%
+Specifically, we discuss relevant past work for question answering, dialogue, and machine translation in Section~\ref{sec:bgtasks} as background for our research.
+%
+Certain tasks for these subfields are unable to be solved with naturally-found data and require dataset creation.  
+
+Different types of users can \textit{generate} and \textit{annotate} the data needed for these language models.  
+%
+Unspecialized users can be asked to solve tasks through \textit{crowd-sourcing} and automated methods can be used to generate data at scale (Section~\ref{sec:crowd}).  
+%
+Hybrid approaches combine cheap and large-scale methods with experts that verify the results (Section~\ref{sec:hybrid}).
+%
+Lastly, data can be gathered and annotated exclusively using experts (Section~\ref{sec:expert}).  
+%
+We provide the necessary background and past work relevant to these three data pools in Section~\ref{sec:bgdata}.
+%
+We explain the models and metrics that are used in solving these tasks in Section~\ref{sec:bgmodels}.  
+
+
+\section{How Language Models Begot Training Data}
+\label{sec:bghistory}
+
+Our understanding of language has been quantified through formalizing tasks that provide evidence for a theory.  
+%
+These include the Shannon game~\citep{shannon1949mathematical} and the Turing Test~\citep{turing1950computing}.
+%
+\nlp{} continues to explore language through the introduction of new tasks, such as question answering, machine translation, and dialog.
+%
+Each of these tasks is ``solved'' through the construction of a system.  
+%
+However, building this system and then evaluating it depends on data.  
+
+A statistical approach to language---a departure from the linguistics paradigm---brought forth Natural Language Processing.\footnote{The development of the computer and the nearly immediate connection to human language is the other major half.  	 Alan Turing proposed the Turing Test to evaluate if a machine can converse in a manner indistinguishable from a human~\citep{turing1950computing}.  	
+%	
+The test  explores if the variance among humans is large enough for a clever computer to fool a human judge.  
+%
+Obviously one cannot have a conversation with a machine in the first place without \nlp{}!}
+%
+Performing language tasks with simplified rules and limited vocabulary was the paradigm for linguistics~\citep{wittgenstein1953philosophical, berko1958child}.  
+%
+Linguistics developed a statistical slant in the 20\textsuperscript{th} century with the insights of J.R. Firth, who declared that, ``you shall know a word by the company it keeps''~\citep{firth1957synopsis}.
+%
+This insight serves as the foundation of embedding-based representations of language in modern-day \nlp{}.  
+
+\begin{comment}
+RIP attempt at linguistics discussion
+\citet{chomsky1986knowledge}'s Universal Grammar serves as a stepping stone between linguistics and information theory.  
+%
+The existence of an innate predisposition to language in children, rather than a dependence on learning everything, precipitates the application of statistics to language.  
+%
+If grammar can be universal, why could statistics not be applied to all languages in a universal manner?
+%
+\end{comment}
+%These developments led to the emergence of language models built with data, rather than rules in \nlp{}.  
+
+
+\begin{comment}
+The major milestones are the development of Zipf's Law, information theory, artificial intelligence, and universal grammar, which are discussed in chronological order.     
+
+
+First, \citet{zipf1935psycho} introduced Zipf's Law, which notes that there is a strong relationship between the rank of a word and its frequency:
+the first-order word occurs notably more often than the second-order word, the second-order word occurs more often than the third-order word, and so on.   
+%  
+This statistical distribution of language is necessary for machine learning to work and this insight applies not only to words, but to phrases~\citep{williams2015zipf}, language learning~\citep{powers1998applications}, and many non-\nlp{} phenomena such as website usage~\citep{jiang2013understanding}.  
+
+Following this insight, \citet{shannon1949mathematical} proposed information theory, which reduces linguistic information to a numerical representation.  
+%
+\end{comment}
+
+
+\begin{comment}
+Fundamentally, information theory is a method to distinguish \textit{signal} from \textit{noise}.  
+%
+The theory introduces entropy and perplexity in language as measures of the unexpectedness of a word in a given sentence.  
+%
+``Computer'' is more likely to be followed by ``science'' than ``aardvark''.  
+%
+This metric crucially provided a way to think about \textit{language models}, which predict a future word (or character).
+
+In parallel, Artificial Intelligence proposed that machines can learn to distinguish the signal from the noise, akin to humans. 
+%	
+Alan Turing proposed the Turing Test to evaluate if a machine can converse in a manner indistinguishable from a human~\citep{turing1950computing}.  
+%
+The test  explores if the variance among humans is large enough for a clever computer to fool a human judge.  
+%
+Obviously one cannot have a conversation with a machine in the first place without \nlp{}!
+%
+Crucially, at this period of time computer science was still largely a theoretical and not an applied field.  
+
+Linguistics had also developed a statistical insight in the 20\textsuperscript{th} century, mainly with the insights of Firth and Chomsky.
+%
+J.R. Firth declared that, ``you shall know a word by the company it keeps''~\citep{firth1957synopsis}.
+%
+This insight serves as the foundation of embedding-based representations of language in modern-day \nlp{}.  
+%
+\citet{chomsky1986knowledge}'s Universal Grammar serves as a stepping stone between linguistics and information theory.  
+%
+The existence of an innate predisposition to language in children, rather than a dependence on learning everything, precipitates the application of statistics to language.  
+%
+If grammar can be universal, why could statistics not be applied to all languages in a universal manner?
+%
+These developments across different fields led to the emergence of language models built with data, rather than rules in \nlp{}.  
+\end{comment}
+
+The language model has created the dependence on training data, with which this proposal is concerned.  
+%
+Statistical language modeling evolved over the 20th century from the Markov chain~\citep{markov1906extension,shannon1948mathematical,rosenfeld2000two} and has slowly taken over linguistic journals as the dominant approach for solving language tasks.  \dpcomment{need to add brown 1960 and barker 1970.  can't find those.}
+%
+The co-occurrence of words in the form of a n-gram model became the paradigm.
+\begin{equation}
+p(w_i|h_i)=p(w_i \g w_{i-n+1}, \dots, w_{i-i})
+\label{eq:ngram}
+\end{equation}
+where $w_i$ is the $i$th word in a sentence and $h_i$ is the history of words that came before.  
+%
+Furthermore, this method can be applied to \textit{any} symbols, and not just language, which has made \nlp{} methods useful for fields like biology.  
+
+This type of language model is entirely dependent on training data due to its lack of any constructed rules or linguistic knowledge. 
+%
+A language model trained on inaccurate and nonsensical language data will confidently predict nonsense, as it has no understanding of rules, grammar, or language.
+%
+A machine has no intrinsic understanding of what is signal and what is noise, and it is up to the intrepid scientist to specify how a snippet of language should be correctly understood by the machine.
+%
+The probability of ``computer science'' occurring more often than ``computer aardvark'' in a language model is subject entirely to the training data rather than any ontological or linguistic truth.  
+%
+This is a key insight of information theory~\citep{shannon1949mathematical}, which reduces linguistic information to a numerical representation.  
+%
+Information theory is a logical successor to Zipf's Law~\citep{zipf1935psycho}, which  identifies that there is a strong relationship between the rank of a word and its frequency: the first-order word occurs notably more often than the second-order word, the second-order word occurs more often than the third-order word, and so on.   
+%  
+This statistical distribution of language is necessary for machine learning to work and this insight applies not only to words, but to phrases~\citep{williams2015zipf}, language learning~\citep{powers1998applications}, and many non-\nlp{} phenomena such as website usage~\citep{jiang2013understanding}.  
+
+
+The most obvious option for training this language model is to use easily-found, naturally-occurring data.  
+%
+The development of the Internet in particular led to an explosion of available textual data for language models.  
+%
+The amount of data created from 2010 to 2017 has increased 13-fold.\footnote{https://www.statista.com/statistics/871513/worldwide-data-created/}
+%
+The latest raw text models are trained on \textit{de facto} the entire Internet~\citep{brown2020language}.  
+%
+There appears to be a limit to how much a language model can learn from statistics without understanding language, but that limit has not yet been ascertained.    
+
+Language models can be created for different \nlp{} tasks, but each requires a different type of training data.  
+%
+For example, machine translation requires parallel text, which increases the standard for training data quality.  
+
+\section{Tasks}
+\label{sec:bgtasks}
+We focus on three \nlp{} tasks in our research: Machine Translation, Question Answering, and Dialogs.
+
+\subsection{Machine Translation}
+\label{sec:mt}
+
+Machine translation was one of the earliest uses of \nlp{}.  
+%
+One needs text from multiple languages for this task, which led to the collection of parallel texts across languages.  
+%
+We discuss several key datasets in the area.
+
+Machine translation as a \nlp{} task only dates back half a century.
+%
+Yet it has already undergone dramatic changes in methodology.  
+%
+The Georgetown Machine Translation experiments translated dozens of sentences from Russian into English in 1954~\citep{hutchins2004georgetown}.
+%
+The system used a rules-based approach that encoded grammar and lexical endings to convert the input sentence to the target language.
+%
+This proof of concept began a decade of research into the topic, until a realistic assessment of results concluded that machine translation could not be solved in several years, as initially presumed.
+
+The rise of statistical machine translation began with the recognition that parallel French-English text from the Canadian parliament could be used to train more flexible models than previously possible~\citep{berger1994candide}.
+%
+Thinking of languages as a noisy channel model---English is a garbled version of French---allowed researchers to align parallel corporate and \textit{learn} how language can be automatically translated.  The equation is:
+\begin{equation}
+\hat{e}=\argmax_e p(e\g{}f)
+\end{equation}
+where $e$ is the English sentence and $f$ is the French sentence.
+%
+Hence, $p(e\g{}f)$ calculates the highest corresponding English sentence for the French one.  
+%
+The intuition of this builds on the insight of Equation~\ref{eq:ngram}, since an existing word predicts an unseen word.  
+
+Since this development, parallel corpora have been sought after in every conceivable domain.  
+%
+The Bible, books, medical records, and the Internet predate \nlp{}.   
+%
+The Bible~\citep{resnik1999bible} is a prime example of a existing corpus that can provide parallel data for ``2000 tongues''.\footnote{In this case, only for a dozen tongues.} 
+%
+Literature and movie captions~\citep{varga2007parallel}, librettos~\citep{durr2005cantatas}, medical information~\citep{deleger2009translating},  and the Internet~\citep{resnik2003web, smith2013dirt} can all be sources of parallel data.
+%
+The independent growth of these corpora will provide language models with \textit{found} data, which can be used for training supervision.       
+
+Data generation has become necessary for this subfield given the large amount of data required, and all the possible languages to cover.
+%
+The Workshop on Machine Translation facilitates model-building for machine translation~\citep{koehn2006manual}, which would be impossible without standardized datasets for the community collaboration.  
+%
+Statistical Machine Translation has been supplanted by neural machine translation (\abr{nmt})~\citep{wu2016google}.  
+%
+Chapter~\ref{ch:contracat} evaluates limitations of \abr{nmt} for coreference resolution~\citep{soon2001machine}, the task of disambiguating  the appropriate pronoun for each named entity.  
+%
+Our proposal introduces a new machine translation task, cultural adaptation, that requires collecting translations from cultural experts for gold standard evaluation.  
+
+Recent research has used machine translation for downstream tasks such  as coreference resolution and question answering.  
+%
+Pronouns must be resolved in multiple languages~\citep{muller2018large}.
+%
+\abr{mlqa} and \abr{xq}u\abr{ad} automatically generate paired questions through machine translation~\citep{lewis2019mlqa, 2019xquad}.
+%
+TyDi~\citep{tydiqa} gives crowd-sourced users prompts from Wikipedia articles to create questions in a wide range of languages.  
+%
+The following section discusses question answering independently of machine translation.  
+
+\begin{table}
+	\centering{}
+	\begin{tabular}{l l l}
+		\textbf{Dataset} &	\textbf{\# of Sentences} & \textbf{Data Source}\\
+		\hline
+		ContraPro & 12,000 & Found \\
+		Canadian Parliament & 1,300,000 & Found \\
+		EuroParl & 11,000,000 &  Found \\
+		TyDi & 204,000 & Crowd \\
+		MLAQ & 12,000 & Hybrid \\
+		XQuAD & 1,190 & Expert \\
+	\end{tabular}
+	\caption{A tabular summary of machine translation datasets.}
+	\label{tab:mt}
+\end{table}
+
+\subsection{Question Answering}
+\label{sec:qa}
+
+Another task heavily dependent on training data is Question Answering (\abr{qa}).  
+%
+In the current machine learning paradigm, \abr{qa} can only answer a question with a previously seen answer.  
+%
+Therefore, the coverage of questions and answers is important as
+models trained on trivia questions cannot answer inquiries about medical symptoms, and vice versa.
+%
+We discuss the relevant history of question answering and review the most relevant datasets.  
+
+\begin{table}
+	\centering{}
+	\begin{tabular}{l}
+		\textbf{Questions} \\
+		\hline
+		What is the English meaning of caliente? \\
+		What is the meaning of caliente (in English)? \\
+		What is the English translation for the word ``caliente''? \\
+	\end{tabular}
+	\caption{Three questions from \trec{} 2000 data that are believably varied.  The test questions were carefully crafted by experts.}
+	\label{tab:trec}
+\end{table}
+%Early work on Question Answering involved  queries related to baseball and the moon.  \dots{}
+The Text Retrieval Conference established Question Answering as an annual, formalized task~\citep{voorhees1999trec}.  
+%
+The questions were carefully curated every year and modifications to the question answering task were made. 
+%
+Table~\ref{tab:trec} shows examples of questions that are intended to fool systems reliant on literal information extraction.  
+
+
+\begin{table}
+	\centering{}
+	\begin{tabular}{l l}
+		\textbf{Questions} &	\textbf{Answers}\\
+		\hline
+		``Which laws faced significant opposition?'' & later laws \\
+		``What was the name of the 1937 treaty?'' & Bald Eagle Protection Act \\
+	\end{tabular}
+	\caption{The paper examples from \squad{}.  In contrast with Table~\ref{tab:trec}, these questions are done through crowd-sourcing and Wikipedia and are not carefully planned. }
+	\label{tab:squad}
+\end{table}
+
+The neural era ushered in larger more diverse Question Answering datasets, with \squad{} \citep{rajpurkar-16, rajpurkar-18} being the most popular leaderboard for models.  
+%
+The amount of questions went from being measured in the \textit{hundreds }to being measured in the \textit{hundreds of thousands}.  
+%
+Example questions are provided in Table~\ref{tab:squad}.
+%
+Large influential question answering datasets include \squad{} 1.0~\citep{rajpurkar-16}, \squad{} 2.0~\citep{rajpurkar-18}, MS Marco~\citep{bajaj2016ms}, TriviaQA~\citep{joshi2017triviaqa} \quac{}~\citep{choi2018quac}, Quizbowl~\citep{rodriguez2019quizbowl}, and Natural Questions~\citep{kwiatkowski2019natural}. 
+%
+We summarize the size of these datasets and their user pools in Table~\ref{tab:qa}.
+
+Computers can read a question and select the answer from a passage of text.  
+%
+This format of question answering is called machine reading comprehension~\citep[\abr{mrc}]{rajpurkar-16}, and has been a popular choice for dataset design.
+%
+However, \abr{qa} models struggle to generalize when
+questions do not look like the standalone questions systems in training
+data: e.g., new genres, languages, or closely-related tasks~\citep{yogatama2019learning}.
+%
+Unlike \abr{mrc}, \textit{conversational question answering} requires models to link questions together
+to resolve the conversational dependencies between them: each question
+needs to be understood in the conversation context.
+%
+For example, the question \textit{``What was he like in that episode?''}
+cannot be understood without knowing what \textit{``he''} and
+\textit{``that episode''} refer to, which can be resolved using the
+conversation context.
+%
+CoQA creates conversational question answering around different domains--Wikipedia, children's stories, News Articles, Reddit,literature,  and science articles--by pairing Mechanical Turk crowd-sourced workers together~\citep{reddy2019coqa}.
+
+%Creating questions in languages other than English is another current research direction as touched upon in Section~\ref{sec:mt}.  
+%
+%\abr{mlqa}~\citep{lewis2019mlqa}, \abr{xq}u\abr{ad}\citep{2019xquad}, and TyDi~\citep{tydiqa} are recent examples.  
+
+\begin{table}
+	\centering{}
+	\begin{tabular}{l l l}
+		\textbf{Dataset} &	\textbf{\# of Questions} & \textbf{Data Source}\\
+		\hline
+		CoQA  & 8,000 & Crowd \\
+		\squad{} 1.0 & 100k &  Crowd \\
+		\squad{} 2.0 & 50k &  Crowd \\
+		\quac{} & 100k & Crowd \\
+		TriviaQA & 95k & Hybrid \\
+		Quizbowl & 100k & Hybrid \\
+		Natural Questions &  300k & Hybrid \\
+		MS Marco & 1000k &  Found \\
+		\abr{trec-8} & 200 & Expert \\
+		Trick Me & 651 & Expert \\
+	\end{tabular}
+	\caption{A tabular summary of dialog datasets.  The datasets described as hybrid all scrape or use naturally-occurring language and then supplement it with crowd-sourced annotation.}
+	\label{tab:qa}
+\end{table}
+
+Recent work has began to acknowledge that crowd-sourced users may not be an optimal source for data or participants.
+%
+\citet{wallace2019trick} work with the Quizbowl community to rewrite questions be adversarial.  
+%
+\citet{clark2020tydi} emphasize that natural speakers of a language must be used to write authentic questions in languages outside of English, although the source of theses speakers is still crowd-sourced unverified users as they do not have other scalable access to speakers of typologically diverse languages.
+%
+\citet{boyd2020question} calls into question the paradigm of using crowd-sourced workers as the measure for human baselines, rather than evaluating through a play test.  
+
+
+
+\subsection{Dialogs}
+\label{sec:dialog}
+
+%Like question answering, conversational datasets have been gathered for different purposes and with different techniques.
+%
+%We provide a brief history of conversational datasets and summarize the relevant datasets.  
+
+Existing \textit{found} conversational data has been repurposed as \nlp{} datasets.  Ubuntu threads provide millions of conversations of technical support~\citep{lowe2015ubuntu}.  Reddit, a collection of threaded comments about diverse subjects, and OpenSubtitles, collections of movie and television subtitles, provide millions of sentences as training data~\citep{henderson2019datasets}.
+
+However, \textit{found} datasets cannot cover all domains and languages.  
+%
+Therefore, \textit{generating} conversational datasets becomes a \nlp{} need.
+%
+The Dialog State Tracking Challenge~\citep{henderson-etal-2014-second} formalizes the dialog task on an annual basis and creates several relatively-small, crowd-sourced datasets focusing on different conversational tasks.    
+%
+MultiWOZ proposes a framework for simulated conversations, which is necessary for domains containing sensitive data that cannot be released~\citep{budzianowski2018multiwoz}.
+
+
+\begin{table}
+	\centering{}
+	\begin{tabular}{l l l}
+		\textbf{Dataset} &	\textbf{\# of Questions} & \textbf{Data Source}\\
+		\hline
+		DSTC2 & 1,612 & Found \\
+		Ubuntu Dialog & 930,000 & Found \\
+		Reddit & 256,000,000 & Found \\
+		OpenSubtitles & 316,000,000 & Found \\
+		DSTC2 & 1,612 & Crowd \\
+		CoQA  & 8,000 & Crowd \\
+		MultiWOZ & 8,438 & Crowd \\	
+		
+	\end{tabular}
+	\caption{A tabular summary of key dialog datasets.}
+	\label{tab:qa}
+\end{table}
+
+
+
+
+\section{Data Collection Type}
+\label{sec:bgdata}
+
+Data for machine learning can come from one of four sources: automation, crowd-sourcing, a hybrid mix of the crowd with experts, and exclusively experts.  
+%
+We discuss the seminal work for each of these data pools.
+
+\subsection{Finding}
+\label{sec:found}
+
+Reusing existing text through scraping websites or forums and re-purposing historical documents can create datasets with little effort.  
+%
+We define the this type of data as \textit{found}.  
+
+The Internet contains information varying in quality.  
+%
+Amazon reviews~\citep{mcauley2015image}, Twitter~\citep{banda2020twitter}, and Wikipedia~\citep{vrandevcic2014wikidata} provide language from unverified users on the Internet.  
+%
+These datasets are large, but contain noise due to having a low barrier to entry for contributors.  
+
+Higher quality datasets often come from organizations that have an incentive to control or report their data.
+%
+Enron emails are original emails collected into a dataset~\citep{klimt2004enron}.
+%
+EuroParl is collected from professionally translated official parliamentary proceedings~\citep{koehn2005europarl}.
+%
+Literature comes from a verified author~\citep{iyyer2016feuding}, as does journalism~\citep{lewis2004rcv1}.
+%
+%The Titanic had an accurate list of passengers. 
+%
+The United Nations maintains detailed datasets about global populations.  
+%
+%New York City releases the Taxi and Limousine Commission data.
+%
+The World Trade Organization releases a comprehensive collection of legal disputes.  
+%
+
+The original source of this type data can be experts (e.g., World Trade Organization lawyers and translators) or they can be unverified online users (e.g., Reddit users).
+%
+Since this data was not intentionally intended for \nlp{}, \textit{annotation} is often required.  
+%
+Additionally, found data can be created by experts or unverified generalists, depending on the task and the desired quality.  
+
+\subsection{Automation}
+
+Not all data necessary for \nlp{} exists already.  
+%
+Therefore, data \textit{generation} becomes necessary.
+%
+Synthetic data can be created according to fixed rules or templates, which we refer to as automation. 
+%
+Augmentation is a frequent phrasing of this way of creating data~\citep{kafle2017data}.
+%
+This method can create datasets of any scale, but it does not guarantee their authenticity.
+%
+%Not yet mentioned An alternative budget approach to unspecialized crowd-sourcing are automated data generation techniques.  
+
+Templates can be used to create datasets unlimited in scale, but dubious in realism.
+%
+~\citet{filatova2006automatic} generate questions using specific verbs for various domains: airplane crashes, earthquakes, presidential elections, terrorist attacks.
+%
+In their own words, their automatically created templates are  ``not  easily  readable  by  human annotators'' and the evaluation requires a lengthy discussion.
+%
+Examples of questions generated though templates include the following nonsensical questions about specific earthquakes:
+\begin{itemize*}
+	\item \textit{Is it near a fault line?}
+	\item \textit{Is it near volcanoes?}
+\end{itemize*}
+
+Chapter~\ref{ch:unspecialized} describes our project in which text-to-speech creates a dataset of 500,000 audio files.  
+%
+While large, our dataset is limited to a single female voice and read in a notably different cadence than that of realistic Quizbowl experts.  
+%
+Additionally, our automation method depends on the existence expert-written questions in the first place.  
+%
+However, to create a dataset of the same size with human experts would require thousands of hours.
+%
+\citet{Mozafari2014ScalingUC} propose using active learning to minimize the human effort needed to gather large-scale datasets; one gathers annotations for a subset of the data and then extrapolates those labels to similar unlabeled data.  
+%
+This serves as a segue into the next type of data creation method: crowd-sourcing.  
+
+
+\subsection{Crowd-Sourcing}
+\label{sec:crowd}
+
+We define crowd-sourcing and automatic data generation techniques, explain their history, and comment on the repercussions of the wide-spread use of this data pool in \nlp{} today. 
+%
+Crowd-sourcing is ``the practice of obtaining needed services, ideas, or content by soliciting contributions from a large group of people and especially from the online community rather than from traditional employees or suppliers''~\citep{mw:crowd}.
+%
+Crowd-sourcing, in the applied sense, relies on unspecialized users and is the most popular way to create new datasets in \nlp{} today.  
+%
+%We discuss its history and then the benefits and the limitations of this talent pool.  
+
+
+The reliance on crowd-sourcing low-cost labor is a phenomenon just over a decade old. 
+%
+~\citet{deng2009imagenet} build ImageNet using Mechanical Turk---a crowdsourcing marketplace that makes it easier for individuals and businesses to outsource their processes and jobs to a distributed workforce who can complete these tasks virtually~\citep{mturk}--- crowd-sourcing for annotating WordNet with images, which ushered in this paradigm.  
+%
+Visual classification tasks are maximally simple in nature since annotators are asked to decide if an image contains a Burmese cat.  
+%
+Figure~\ref{fig:crowdmurk} shows their interface.
+%
+Despite this, disagreement is a major problem and a minimum of 10 users are used to guarantee a level of confidence.  
+%
+Even with constant updates, the dataset still has limitations a decade later from the initial scaling methodology used to create it~\citep{yang2020towards}. 
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\linewidth]{\figfile{ImageNet_MTurk.png}}
+	\caption{~\citet{deng2009imagenet} pioneers Mechanical Turk use for Computer Science.  Simple \textit{annotation} tasks can be completed reliably with crowd-sourcing since selecting if an image belongs to a WordNet category (e.g., car, bicycle, delta) is a relatively objective and straightforward task.  However, many \nlp{} tasks are not so clear-cut.}
+	\label{fig:crowdmurk}
+\end{figure*}
+
+Crowd-sourcing spread to other disciplines other than machine vision as a source for research data.  
+%
+\citet{buhrmester2016amazon} claim that Amazon Mechanical Turk gathers ``high-quality data inexpensively and rapidly'' for psychology.  
+%
+The average psychology experiment is conducted using university students that require hourly compensation and usually come from a concentrated geographic area and socio-economic background.  
+%
+However, the evidence for this claim stems from having participants fill out a survey and is primarily evaluated on the time required, rather than the quality of the final result. 
+%
+In their survey, users report that their motivation for using Mechanical Turk is higher on a Likert scale for enjoyment than for payment.  
+%
+Given that nearly every \nlp{} task requires that users complete a large amount of previous tasks (1000+) and with a nearly perfect accuracy (90\%+), this claim seems unlikely to hold for the average producer of \nlp{} data.  
+%
+As a note of caution, \citet{mason2012conducting} claim that spammers are likely to target surveys on Mechanical Turk.  
+
+Crowd Flower, renamed as Figure Eight, is a platform similar to Mechanical Turk, but with a focus on quality control.  
+%
+While Mechanical Turk keeps track of Human Intelligence Tasks (\abr{hit})---the name for each individual task---accuracy rates, this metric depends on task providers to manually evaluate the data and provide feedback about the worker.  
+%
+This level of oversight is unlikely to occur for thousands of tasks.  
+%
+Crowd Flower's innovation is to include a test set with each task which monitors that users' responses correspond to gold labels.  
+%
+As early adopters of crowd-sourcing, \citet{Finin2010AnnotatingNE} use Crowd Flower for annotating named entities in Twitter.  
+%
+However, most annotations are completed by a few prolific workers, which opens up the dataset to potential biases.  
+%
+Furthermore, creating a crowd-sourced dataset with Crowd Flower is possible for \textit{annotation} but not for \textit{generation}.
+
+
+From computer vision annotation, crowd-sourcing transferred over to natural language processing~\citep{callison2015crowdsourcing}.  
+%
+~\citet{snow2008cheap} posit that (on average) four non-expert workers can emulate an expert for five \abr{nlp} tasks: affect recognition, word similarity, textual entailment, temporal event recognition, and word sense disambiguation.  
+%
+Using a nonprofessional user pool is the default manner for collecting large datasets for \nlp{} as it can generated and annotated quickly and cheaply.    
+%
+As on example, large question answering datasets involving Wikipedia and search engines---\squad{}, SearchQA---use crowd-sourcing to generate questions~\citep{rajpurkar-16, dunn-17}.
+%The use of crowd-sourcing for \nlp{} data is a recent phenomenon.  
+%
+%ImageNet began the paradigm of large-scale, low-cost data collection when it annotated WordNet images through the use of crowd-sourced workers on Mechanical Turk in 2009~\citep{deng2009imagenet}.  
+%
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=.7\linewidth]{\figfile{crowd_example.png}}
+\caption{Crowd-sourcing can also be used to generate large-scale \nlp{} data.  However, \textit{generation} creates a quality issue not present in \textit{annotation}.  In this particular example,  ~\citet{choi2018quac} highlight that the teacher does not provide quality responses.  However, the student's conversation is quite unnatural and has grammatical issues.}
+\label{fig:crowdquac}
+\end{figure*}
+
+
+
+%Chapter~\ref{ch:unspecialized} provides a thorough history of \nlp{} datasets generated or annotated without the use of any specialized users. 
+
+
+The two main benefits to this data source are the cost and the rapid rate of data collection.  
+%
+The cost is unquestionably lower for an employer or researcher to use the crowd rather than internal employees.
+%  
+Crowd workers are paid a fraction of what full-time employees would receive for the same task and do not receive any benefits~\citep{whiting2019fair}.\footnote{This clearly is not a pro from the worker's perspective.}  
+%
+Largely due to the variations in cost-of-living around the world and flexibility of the work, the pay is appealing to some workers.  
+%
+The demographics of the platform more accurately model the United States than the average college student, at least for psychology experiments~\citep{buhrmester2016amazon}.  
+%
+As a result, Amazon Mechanical Turk has over a hundred-thousand workers, thousands of which are available at any moment~\citep{difallah2018demographics}.  
+%
+Modular tasks can be completed in hours in crowd-sourcing, as thousands of temporary workers complete tasks faster than a handful of employees.  
+
+The con to crowd-sourcing is that quality control becomes the  central challenge for crowd-sourcing \nlp{} data.
+%
+\citet{zaidan2011crowdsourcing} show that data gathered from crowd-sourcing for machine translation nets a \bleu{} score nearly half the size of professional translators, and only one point higher than an automatic machine translation approach.  
+%
+Other studies have shown that users tend to voluntarily provide inaccurate data~\citep{suri2011honesty} and misrepresent their background~\citep{chandler2017lie, wessling2017mturk}.
+%
+Last, there is an upper-bound to the complexity of crowd-sourced tasks.  
+%
+Crowd workers have been shown to become less reliable and efficient for tasks that are not straightforward~\citep{finnerty2013keep}.
+%
+Figure~\ref{fig:crowdquac} shows that more complicated \nlp{} task instructions are not followed in good faith.  
+%
+For classification tasks, average accuracy needs to exceed 50\% for reliable annotators to overcome their noisy peers~\citep{kumar2011learning}.
+%
+Given that certain tasks are highly sparse, this is not a threshold that is always achievable.  
+%
+As a tangential consideration, legal regulation may ultimately limit the effectiveness of this technique, since it is completely unregulated by current employment practices~\citep{wolfson2011look}.  
+%
+
+Chapter~\ref{ch:unspecialized} reveals quality issues in this technique through a project that crowd-sources question.  
+%
+We use Mechanical Turk's crowd to rewrite sequential questions into a standalone format.  
+%
+However, extensive manual review is necessary to remove the low-quality contributions from the data pool.
+%
+Hybrid methods can provide quality control for crowd-sourcing.  
+
+\subsection{Hybrid}
+\label{sec:hybrid}
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\linewidth]{\figfile{hybrid_example.png}}
+	\caption{Hybrid approaches try to control the quality of language \textit{generated} by the crowd.  MultiWoz~\citep{budzianowski2018multiwoz}, creates a rigid template for the user conversation, avoiding the worst quality issues at the expense of user creativity.}
+	\label{fig:hybrid}
+\end{figure*}
+
+
+\textit{Hybrid} approaches aim to enhance crowd-sourcing by overseeing unspecialized labor or automatic methods with expert knowledge.
+%
+This combination lowers cost and allows for data scaling, while maintaining a certain level of quality control.  
+%
+We define hybrid user pools and discuss past projects.
+%
+%Last, we discuss a project that pairs crowd-sourced workers from Mechanical Turk with expert customer service agents employed by a corporation in Chapter~\ref{ch:semi}. 
+
+We define hybrid data collection sources as any that combine a cost-saving pool, such as crowd-sourcing or automation, with expert supervision.  
+%
+This is a natural extension of crowd-sourcing and does not require as detailed of a historical overview: once quality issues were noted, attempts were made to remedy them.  
+%
+For \textit{generation}, crowd-sourced workers can be combined with trained agents to create data for a given \nlp{} task.  
+%
+For \textit{annotation}, crowd-sourced workers can be supervised by trained experts.
+%
+
+As an illustrative example, \citet{zaidan2011crowdsourcing} propose an oracle-based approach to identify the high quality crowd-sourced workers and rely on their judgments.  
+%
+The paper claims that crowd-sourcing can lead to a notable reduction in cost without a complete loss in quality.  
+%
+Their approach crucially depends on having expert (professional) translations as a reference point.  
+
+Numerous other approaches have proven successful for a myriad of tasks.
+%
+\citet{kochhar2010anatomy} use a hierarchical system for database, specifically Freebase, slot filling.  First, an item is populated by automatic methods, then issues are escalated to volunteer users, and any remaining issues are escalated to trained experts. 
+%
+\citet{ade2012expert} design a system for essay-grading that allows for teacher oversight and compare their results to area experts.  
+%
+\citet{hong2018standardizing} optimize the productivity of medical field experts by providing additional reference resources and standardizing databases.  
+%
+\abr{fever}~\citep{thorne2018fever} relies on super-annotators on one percent of the data as a comparison point for all other annotations for \textsc{fever}.
+%
+Errors made by crowd-sourced workers on Named Entity Recognition can be clustered and identified, which in turn can be escalated to a skilled arbitrator to improve task guidance~\citep{nguyen2019explainable}.
+%
+Having an expert-written template that crowd workers must follow eliminates the worst-quality submissions~\citep{budzianowski2018multiwoz}.  This example is provided in Figure~\ref{fig:hybrid}.
+%
+Combining trained and untrained workers can be used for generating Wizard-of-Oz personal assistant dialogs~\citep{byrne2019taskmaster}.
+
+
+Furthermore, there are two crowd-sourcing platforms whose business model relies on this hybrid approach.  
+%
+Crowd Flower, mentioned in Section~\ref{sec:crowd}, attempts to booster the reliability the crowd by requiring the task master to create gold-standard test questions, which are interspersed among the data being collected~\citep{vakharia2015beyond}. 
+%
+While not necessarily using experts, this provides an automatic quality filter that down-weights the reliability of annotations made by the least accurate--as determined by the gold-standard test set---annotators.  
+%
+Crucially, this approach can only work for \textit{annotation}, as generation quality cannot be quickly assessed.
+%
+ODesk is a crowd-sourcing platform that provides a hybrid approach, as it relies on crowd-sourcing from the Internet, but vets the participants to have a matching skill-set for the task~\citep{vakharia2015beyond}.
+
+\begin{comment}
+removed since about chapter
+In our work, we pair crowd-sourced workers from Mechanical Turk with actual customer service agents employed by a corporation.
+%
+This set-up is meant to imitate a real customer-service interaction. 
+%
+Customers are impatient and have no incentive to be grammatical, creative, or polite.
+%
+In contrast, customer service agents are beholden to their employers and must handle a plethora of unique customer requests.  
+%
+Having an expert in the conversation allows us to introduce creativity into the conversation, and to have a reliable source of conversation quality.  
+\end{comment}
+
+
+
+\subsection{Expert}
+\label{sec:expert}
+
+\begin{table}[t]
+	\small
+	\centering
+	\begin{tabular*}{\linewidth}{p{9.5cm}p{2cm}p{2.25cm}}
+		{\bf Message} & {\bf Sender's intention} & {\bf Receiver's perception} \\
+		\hline
+		\noalign{\vskip 2mm} 
+		\parbox{9.5 cm}{If I were lying to you, I'd smile and
+			say ``that sounds great.''  I'm honest with you
+			because I sincerely thought of us as partners.}
+		& Lie & Truth \\
+		\noalign{\vskip 2mm} 
+		\rowcolor{gray!25}
+		\parbox{9.5 cm}{You agreed to warn me of unexpected
+			moves, then didn't \dots You've revealed things to
+			England without my permission, and then made up a
+			story about it after the fact!}  & Truth & Truth \\
+		\noalign{\vskip 2mm}
+		\parbox{9.5 cm}{\dots I have a reputation in this hobby
+			for being sincere.  Not being duplicitous.  It has
+			always served me well. \dots If you don't want to
+			work with me, then I can understand that \dots} &
+		Lie & Truth \\
+		\noalign{\vskip 2mm} 
+		\rowcolor{gray!25}
+		\multicolumn{3}{c}{\textit{(Germany attacks Italy)}} \\ 
+		\noalign{\vskip 2mm} 
+		\parbox{9.5 cm}{Well this game just got less fun} & Truth& Truth \\
+		\noalign{\vskip 2mm} 
+		\rowcolor{gray!25}
+		\parbox{9.5 cm}{For you, maybe} & Truth & Truth \\
+	\end{tabular*}
+	\caption{In contrast to the previous conversations involving crowd workers, conversations involving experts \textit{generate} creative, and even humorous, language.  Additionally, the \textit{annotation} of truthfulness is not possible with crowd-sourcing, since it requires the \textit{generator's} real-time knowledge.  This conversation snippet is from the Diplomacy project discussed in Chapter~\ref{ch:expert}.}
+	\label{tab:dialogexample}
+\end{table}
+
+We define ``experts'', provide a brief summary of relevant datasets, and introduce a dataset \textit{generated} and \textit{annotated} by domain experts.
+
+The Cambridge Dictionary defined ``expert'' as ``a person with a high level of knowledge or skill relating to a particular subject or activity''.  
+%
+Defining expertise is a tricky and subjective goal; for example, ``high level'' is highly subjective in the above definition.   
+%
+\citet{Bourne2014ExpertiseDD} conclude that psychology is the appropriate framework for evaluating expertise, which ``results from practice and experience, built on a foundation of talent, or innate ability''.  
+%
+For \nlp{}, we require that the person has both the incentive and skill to \textit{accurately}, as opposed to quickly, complete their task.  
+%
+A degree of accountability, rather than full anonymity, is important as it prevents intentional fraud~\citep{teitcher2015detecting}.  
+%
+Therefore, we require that experts be identifiable, in at least some capacity during the data collection process.  
+%
+Such experts can be trained or they can be found in specialized communities of interest.  
+%
+The amount of expert-only datasets for \nlp{} are limited due to the high cost associated with hiring experts and quality assurance.  
+%
+Alternatively, skilled citizen scientists may generate high-quality language in the pursuit of a hobby such as journalism, writing, or debate.  
+%
+Given the increasing investment and interest in the field, this route for data collection will be the best long-term investment.  
+%
+We discuss existing sources of this kind of data, methods for generating language data, and methods for annotating language data.  
+
+Language recorded \textit{naturally} for other purposes has led to datasets that have withstood the test of time.  
+%
+The United Nations, New York City, and the World Trade Organization are all organizations that release reliable large-scale data, as discussed in Section~\ref{sec:found}.  
+%
+These organizations hire professionals such as translators and lawyers to generate language.  
+
+However, existing, or \textit{found}, data sources do not cover all \nlp{} tasks and domains.
+%
+Therefore, \textit{generation} by experts is necessary.  
+%
+The best example of this in \nlp{} is WordNet, which was built in the 1980s.
+ %
+ The ontology was carefully crafted using a small batch of Princeton psychology graduate students---arguably some of the best experts in the English language and unarguably participants with a strong incentive to provide meaningful data---over an extended period of time~\citep{Miller95wordnet}.
+
+\textit{Annotations} are possible to collect from non-experts, but often at the expense of their accuracy.
+%
+Programmers can self-annotate their code for easier future accessibility~\citep{shira2010expert}.
+%
+Hate speech annotation is more accurate with expert annotators than amateur ones~\citep{Waseem2016AreYA}.
+%
+In the medical field, the lack of expert annotation poses a barrier to large-scale \nlp{} clinical solutions~\citep{chapman2011overcoming}.
+%
+Unsurprisingly, doctor annotation is more accurate than online generalist annotation for medical diagnoses~\citep{cheng2015there}.  
+
+
+%Datasets that has stood the test of time generally come from expert, non-noisy sources.  
+%
+
+Multiple studies comparing the quality of crowd-sourced work and expert work have been done.  
+%
+\citet{Mollick2016WisdomOM} compare expert to crowd judgment for the funding of theater productions.  
+%
+They conclude that most decisions are aligned between the two pools, but that crowds are more swayed by superficial presentation than underlying quality.   
+%
+\citet{leroy2012combining} compare annotations of text difficulty between a medical librarian and a non-expert user and do not see a large difference on a small sample size.  
+
+Chapter~\ref{ch:expert} presents a project that works with the Diplomacy, a popular board-game, community to \textit{generate} and \textit{annotate} a natural conversational dataset for the task of deception.
+%
+The language in this dataset is realistic and impossible to generate with unspecialized crowd users.  
+%
+An example conversation is provided in Table~\ref{tab:dialogexample}.
+
+\section{Models \& Metrics}
+\label{sec:bgmodels}
+
+Data does not exist in a vacuum and tasks cannot be solved without a formalization. 
+%
+Therefore, we summarize popular models used with the data to solve machine translation, question answering, and dialog.  
+%
+Additionally, we discuss the metrics used to evaluate these models.  
+%
+This emphasis on model, and not data, evaluation is a key limitation in \nlp{}.
+
+
+\subsection{Logistic Regression}
+\label{sec:lr}
+%Decision Trees are rule-based approaches
+
+According to \citet{ng2002discriminative}, the logistic regression is a basic \textit{discriminative} model, meaning that it can classify items into one of several classes.  
+%
+It relies on using features $x$ to predict class $y$ by learning a vector of weights, $\vec{w}$, and a bias term, $b$ according to:
+
+\begin{equation}
+z=\vec{w}\cdot{}\vec{x}+b
+\end{equation}
+The variable $z$ is then passed through a sigmoid function to transform the values to a probability:
+\begin{equation}
+y = \sigma(z) = \frac{1}{(1+e^{-z})}
+\end{equation}
+
+There are two phases to logistic regression: training and test.  
+%
+During training, stochastic gradient descent and cross-entropy loss learn the optimal weights of $\vec{w}$ and $b$.
+%
+Cross-entropy loss calculates the difference between the predicted $\hat{y}$ and the true $y$.  
+%
+The gradient descent algorithm~\citep{bottou2010large, ruder2016overview} finds the minimum loss.  
+
+At test time, for each example the highest probability label is predicted in $y$.  
+%A regression learns the relationship between independent and dependent variables.
+Multinomial logistic regression allows for the prediction of more than two classes.  
+
+Other important parts of logistic regression, and machine learning more broadly, are batching---calculating gradient across multiple examples at once to have a better estimate in which direction to adjust weights---and regularization~\citep{tibshirani1996regression}---penalizing large weights in the function to generalize results from the training data to unseen data.
+
+The logistic regression model is interpretable since the weight of each feature is transparent in the final prediction.  
+%
+Certain features have higher weights than other ones.  
+%
+A feature weight of close to zero would indicate that the feature is not essential for the model; conversely the highest weighted feature is important in the task.  
+%
+This has made the logistic regression a popular baseline model for machine learning.
+%
+Its interpretability with the current state-of-the-art model: neural networks.  
+
+
+
+%A logistic regression can be used for nonlinear classification.
+
+%K-Means Clustering is an unsupervised technique that lumps data together, unsurprisingly, into clusters.
+
+%Support Vector Machines are more complicated and take longer to train.
+
+
+
+\subsection{Neural Models}
+
+%
+%AlexNet applied to the ImageNet classification dataset shows a sizable improvement over past machine learning methods~\citep{krizhevsky2012imagenet}.
+
+Neural networks are a more powerful classifier than logistic regressions and can be shown to learn any function due to a hidden layer.  
+%
+Additionally, they often avoid dependence on carefully crafted features and learn their own representations for the task~\citep{jurafsky2000speech}. 
+%
+Further research into \textit{deep learning} created deeper and computationally more expensive neural networks, specifically for machine vision.  
+%
+From there, the application of neural networks branched out into other domains, including \nlp{}.
+
+Neural networks are an old idea that gained widespread adoption the last decade.  
+%
+The idea of a perceptron was proposed as early as the 1940s~\citep{mcculloch1943logical, rosenblatt1958perceptron}.  
+%
+\dpcomment{AH:, the training algorithm behind a neural network, was proposed in 1986~\citep{rumelhart1986learning}}.
+%
+However, it was not until the 21st century that computing infrastructure allowed neural networks to be effectively applied.  
+
+All neural networks depend on a \textit{loss function} and \textit{backpropagation} 
+%
+The \textit{loss function} tells the neural network how quantitatively wrong a prediction is.  
+%
+Popular loss functions include Cross Entropy Loss---often used for logistic regression and classification tasks--- and Mean Squared Error~\citep{meansquarederror}.  
+%
+\textit{Backpropagation } percolates weight adjustment with the chain rule throughout the entire network.
+%
+This is based on the derivative of the error, which is calculated through the \textit{loss function}.    
+%
+Additionally, rather than relying on n-gram language models (Section~\ref{sec:bghistory}), neural language models reference prior context as \textit{embeddings} that represent the word(s). 
+%
+This means that the neural network can understand that ``cat'' and ``dog'' are similar, and can be treated similarly, whereas a n-gram model assumes independence.  
+%
+word2vec~\citep{mikolov2013distributed2} and GloVe~\citep{pennington2014glove} embeddings are commonly used pre-trained embeddings.  
+%
+This powerful innovation allows has led to the current state-of-the-art dependence on Transformers.
+
+\begin{figure*}[]
+	\centering
+	\includegraphics[width=\linewidth]{\figfile{CNN_Architecture.pdf}}
+	\caption{~\citet{krizhevsky2012imagenet}'s \abr{cnn} architecture.}
+	\label{fig:cnn}
+\end{figure*}
+
+
+Model architectures have evolved over time in \nlp{}.
+%
+Convolutional Neural Networks (\abr{cnn})~\citep{krizhevsky2012imagenet} applied to ImageNet kicked off the applications of deep neural networks.  
+%
+Figure~\ref{fig:cnn} shows the architecture of that model.  
+%
+A \abr{cnn} has several convolution layers that alter the input, as well as pooling layers that condense the input.  
+%
+This architecture is relevant for machine vision in particular since clusters of pixels, rather than an individual one are important for understanding the content of an image.  
+% 
+
+We focus on architectures more applicable to \nlp{}: Deep Averaging Networks~(Section~\ref{sec:dan}) and Recurrent Neural Networks~(Section~\ref{sec:seq2seq}).
+
+
+\subsection{Deep Averaging Network}
+\label{sec:dan}
+The Deep Averaging Network, or \textsc{dan}, classifier proposes a simple architecture with comparable results to more complicated neural models. 
+%
+Unlike Logistic Regression, the \dan{} adapts to linguistic versatility by using embeddings in lieu of specific word features.
+%
+It has three sections: a ``neural-bag-of-word'' (\textsc{nbow}) encoder, which
+composes all the words in the document into a single vector by
+averaging the word vectors; a series of hidden transformations, which
+give the network depth and allow it to amplify small distinctions
+between composed documents; and a softmax predictor that outputs a class.
+
+The encoded representation~$\textbf{r}$ is the averaged embeddings of
+input words.
+%
+ The word vectors exist in an embedding matrix~$\textbf{E}$, from which we can look up a specific word~$w$ with $\textbf{E}[w]$. The length of the document is~$N$. To compute
+the composed representation~$r$, the \textsc{dan} averages all of the
+word embeddings:
+\begin{equation}
+\textbf{r} = \frac{\sum_{i}^{N}\textbf{E}[w\textsubscript{i}]}{N}
+\end{equation}
+
+The network weights~$\textbf{W}$, consist of a weight-bias pair for each layer of
+transformations~$(\textbf{W\textsuperscript{(h\textsubscript{i})}, b\textsuperscript{(h\textsubscript{i})}})$ for each layer $i$ in the list of
+layers~$L$. To compute the hidden representations for each layer, the
+\textsc{dan}  linearly transforms the input and then applies a nonlinearity:
+$
+\textbf{h\textsubscript{0}} = \sigma (\textbf{W\textsuperscript{(h\textsubscript{0})}}\textbf{r}+\textbf{b\textsuperscript{(h\textsubscript{0})}})
+$.
+Successive hidden representations~$h\textsubscript{i}$ are:
+$
+\textbf{h\textsubscript{i}} = \sigma (\textbf{W\textsuperscript{(h\textsubscript{i})}}\textbf{h\textsubscript{i-1}}+\textbf{b\textsuperscript{(h\textsubscript{i})}})
+$.
+The final layer in the \textsc{dan} is a softmax output:
+$
+\textbf{o} = \mathrm{softmax}(\textbf{W\textsuperscript{(o)}}\textbf{h\textsubscript{L}} + \textbf{b\textsuperscript{(o)}})
+$.
+%
+This model is used and modified in Chapter~\ref{ch:unspecialized}.
+
+
+\subsection{Sequence Models}
+\label{sec:seq2seq}
+
+Unlike the \dan{}, Recurrent Neural Networks (\rnn{})~\citep{elman1990finding} take into account the sequence of the input, which is important given the ordered nature of language.  
+%
+The long short-term memory (\lstm{}) \citep{gers1999learning} modifies the \rnn{} by allowing it to discard past information.  
+
+According to \citet{goldberg2017neural}, \textit{Sequence to Sequence} refers to a model that ingests a sequence of text and then generates a sequence of text, rather than a single classification, as an output.  
+%
+The architecture necessary for this is called Encoder-Decoder, as the text input is first encoded---meaning a sequence of text has been transformed into a numerical representation---and then decoded---this representation is then transformed back into text.  
+%
+Machine translation (Section~\ref{sec:mt}) is a clear example where this applies.  If a sentence in German needs to be transformed into English, then the German sentence is first encoded into a numerical representation and then decoded into an English sentence.  
+%
+\textit{Attention}~\citep{bahdanau2014neural} looks at different parts of the encoded sequence at each stage in the decoding process.  
+%
+Visualizing attention provides  a mild level of interpetability as the model looks at a specific part of the input.  
+%
+We use these models in Chapters~\ref{ch:hybrid} and \ref{ch:expert}, as the current state of the apart for \nlp{}.  
+
+The Transformer model simplifies the architecture and dispenses with recursions and convolutions~\citep{vaswani2017attention}, relying instead entirely on attention.
+
+\abr{elm}o~\citep{Peters:2018}, used in Chapter~\ref{ch:hybrid}, improves on GloVe embeddings~\citep{pennington2014glove} by allowing a word's embedding to adjust to the context, rather than being committed to having a single word sense.  
+%
+\abr{bert} improves the embeddings further by looking at context bidirectionally, meaning that words that follow a word influence its embedding.  
+%
+These pre-trained embeddings can be further fine-tuned to accommodate a specific domain's context.  
+
+\subsection{Evaluation}
+
+But how does one evaluate a model, or the underlying quality of data?
+%
+Model evaluation is specific to a general task: classifying images correctly for ImageNet or answering a question for \squad{}.  
+%
+There is a goal of achieving the highest quantitative accuracy on a particular task~\citep{wang2019superglue}; qualitative analysis of \textit{what} was answered correctly  in contrast to another model is often an after-thought~\citep{linzen2020can}.    
+
+Data evaluation is necessary for crowd-sourcing.  
+%
+For annotation, one can compare the annotations of users to one another using \textit{Inter-Annotator Agreement} (\iaa{}).
+%
+\citet{nowak2010reliable} show that for simple image classification tasks, the majority vote of unspecialized users is comparable to expert annotation.  
+
+However, there is no obvious metric to compute \iaa{} for \textit{generation}. 
+%
+Machine translation uses metrics such as BLEU~\citep{papineni2002bleu}, METEOR~\citep{banerjee2005meteor}, and TERp~\citep{snover2009ter} as an automatic approximation of \textit{target} quality; however, the quality of the \textit{source} data---which must be generated by human users---is never evaluated.
+	%
+In question answering, one may limit the possible answers to existing pages in Wikipedia, or some other finite source, to avoid string matching problems.
+%
+But, language is complex and multiple users could write equally valid questions that do not appear similar at the character level.  
+%
+Table~\ref{tab:trec} is one such example.  
+
+The interest in neural techniques and a black box mindset precipitated an ever-increasing race for data; the largest dataset, not the best model architecture may be the key differentiating factor.  
+%
+But how to evaluate the influence of data rather than architecture is an open research question.  
+%
+We explore two examples of large-scale data projects and the limitations of relying on model accuracy, without data verification, in Chapter~\ref{ch:unspecialized}.

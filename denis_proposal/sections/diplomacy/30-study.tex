@@ -1,0 +1,323 @@
+% intro
+\section{Engaging a Community of Liars}
+\label{sec:study}
+
+This dataset requires both a social and technical setup: finding a
+community that plays Diplomacy online and having them use a
+framework for annotating these messages.
+
+\subsection{Seamless Diplomacy Data Generation}
+\label{sec:interface}
+
+%RESOLVED jbgcomment{Popularity isn't a good reason to use discord.}
+
+We need two technical components for our study: a game engine and a
+chat system.
+%The former can be found in an existing format through several
+%websites: PlayDiplomacy, webDiplomacy, and Backstabbr.  After testing
+%out the systems,
+We choose Backstabbr\footnote{\url{https://www.backstabbr.com}} as an
+accessible game engine on desktop and mobile platforms: players input
+their moves and the site adjudicates game
+mechanics~\citep{chiodini2020backstabbr}.
+%
+Our communication framework is atypical.
+%
+Thus, we create a server on Discord,\footnote{\url{https://www.discord.com}}
+the group messaging platform most used for online gaming and by the
+online Diplomacy community~\citep{techspot}.
+%
+The app is reliable on both desktop and mobile devices, free, and does
+not limit access to messages.
+%
+Instead of direct communication, players communicate with a bot;
+the bot does not forward messages to the recipient until the player
+annotates the messages (Figure~\ref{fig:interface}).
+%
+In addition, the bot scrapes the game state from Backstabbr to sync
+game and language data.
+
+%\jbgcomment{Not fixed.  ``past research'', ``suggests'',
+%``simplicity'', and ``desirable'' are vague, back it up with real
+%citation that says something like: For low probability/stigma
+%associated events, forced choice is better. Perhaps something useful
+%to citep here:
+%https://www.frontiersin.org/articles/10.3389/fpsyg.2017.00806/full }
+
+%RESOLVD\jbgcomment{Discussing the binary forced-choice implies an
+%alternative that is never actually stated; expand.}
+
+%DENIS \jbgcomment{``given the difficulty of calibration between
+%users'' is roundabout phrasing and requires backup.  Something like
+%``calling a statement is a lie is difficult, and people would prefer
+%degrees of deception.  We circumvent this through a forced choice''.
+%Citations that back up both the difficulty, shading, etc. would help
+%back this up.}
+
+%RESOLVED\jbgcomment{Desireable requirement is vague.  What is desierable about it}
+
+\jbgcomment{would like help in explicit claim, Ian't access brown
+  paper anymore due to lack of eduroam; jbg: how are the results
+  comparable, how do you know?  Needs greater specificity here.}
+
+Annotation of lies is a forced binary choice in our experiment.
+%
+Explicitly calling a statement a lie is difficult, and people would
+prefer degrees of deception~\citep{bavelas1990truths, bell1996liking}.
+%
+Thus, we follow previous work that views linguistic deception as
+binary~\citep{buller-96,braun-16}.
+%
+Some studies make a more fine-grained distinction; for example,
+\citet{vanswol-12} separate strategic omissions from blatant lies (we
+consider both deception).
+%
+However, because we are asking the speakers themselves (and not
+trained annotators) to make the decision, we follow the advice from
+crowdsourcing to simplify the task as much as
+possible~\citep{snow2008cheap, sabou2014corpus}.
+%
+\dpcomment{Wanted to avoid strong claim.  cartwright2019crowdsourcing
+  finds that binary feels limited in a small experiment.  Removed this
+  citep from the stronger claim \jbgcomment{Removed these citeps which
+    invoke IRT, which we're not using: A comparison of binary forced
+    choice to a Likert scale shows comparable results while limiting
+    user bias~\citep{brown2011item, joubert2015comparison}.  }}
+%
+%
+Long messages can contain both truths and lies, and we ask players to
+categorize these as lies since the truth can be a shroud for their
+aims.
+
+%\jbgcomment{``Borders'' is vague, make this clearer.}
+
+% Tangentially, our conversations are limited to pairwise interactions between players, as the flow and conversation and the annotation of received messages becomes complicated with multiple speakers in one thread.  
+%% JBG 1209: Cutting, seems like it could invite complaint
+% We poll users after completion of the study on the quality of their annotations.  More than 90\% of our users state that their annotations are more than 90\% accurate, on both sent messages and received messages.  
+%\dpcomment{ Jordan cut this out.  This seems quite neat to me: to independently ask users, independent of their payment, if they took the task seriously.  Maybe write a blog post or something?	
+%	We poll users after completion of the study on the quality of their annotations.  More than 90\% of our users state that their annotations are more than 90\% accurate, on both sent messages and received messages. }
+
+
+\subsection{Building a player base}
+
+%\jbgcomment{\dpcomment{how does one top that quote from the NYtTimes??? \jbgcomment{That is about the game itself, not about the community.  Something along the lines of groups of players gleefully calling themselves backstabbers, etc.}} Would be stronger with actual \emph{quote} that revels in lying / deception.}
+
+\jbgcomment{Could you really find nothing about the size of the community?}
+
+The Diplomacy players maintain an active, vibrant community through
+real-life meetups and online play~\citep{AmericanLife2014,
+  chiodini2020backstabbr}.
+%
+We recruit top players alongside inexperienced but committed players
+in the interest of having a diverse pool.
+%
+Our experiments include top-ranked players and community leaders from online platforms,  grizzled in-person tournament players with over 100 past games, and board game aficionados.
+%
+These players serve as our foundation and during initial design helped
+us to create a minimally annoying interface and a
+definition of a lie that would be consistent with Diplomacy play.
+%
+Good players---as determined by active participation, annotation and
+game outcome---are asked to play in future games.
+
+In traditional crowdsourcing tasks compensation is tied
+to piecework that takes seconds to complete~\citep{buhrmester2016amazon}.
+Diplomacy games are different in that they can last a month\dots and
+people already play the game for free.
+%
+Thus, we do not want compensation to interfere with what these players
+already do well: lying.
+%
+Even the obituary of the game's inventor explains
+\begin{quote}
+  Diplomacy rewards all manner of mendacity: spying, lying, bribery,
+  rumor mongering, psychological manipulation, outright intimidation,
+  betrayal, vengeance and backstabbing (the use of actual cutlery is
+  discouraged)''~\citep{nytimes}.
+\end{quote}
+%
+Thus, our goal is to have compensation mechanisms that get people to
+play this game as they normally would, finish their games, and put up
+with our (slightly) cumbersome interface.
+%
+Part of the compensation is non-monetary: a game experience with
+players that are more engaged than the average online player.
+
+To encourage complete games, most of the payment is conditioned on
+finishing a game, with rewards for doing well in the game.
+%
+Players get at least \$40 upon
+finishing a game.
+%
+Additionally, we provide bonuses for specific outcomes: \$24 for
+winning the game (an evenly divisible amount that can be split among
+remaining players) and \$10 for having the most successful lies, i.e.,
+statements they marked as a lie that others believed.\footnote{The lie
+  incentive is relatively small (compared to incentives for
+  participation and winning) to discourage an opportunistic player
+  from marking everything as a lie. Games were monitored in real-time
+  and no player was found abusing the system (marking more than
+  $\sim$20\% lies). }
+%
+Diplomacy usually ends with a handful of players dividing the board among
+themselves and agreeing to a tie.
+%
+In the game described in Section~\ref{sec:walkthrough}, the remaining
+four players shared the winner's pool with Italy after 10 in-game
+years, and Italy won the prize for most successful lies.
+
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{ l l }
+		\textbf{Category}            & \textbf{Value}  \\ 
+		\hline			
+		Message Count       &  13,132 \\ 
+		\alie{} Count      &  591 \\ 
+		\slie{} Count  	  & 566 \\
+		Average \# of Words & 20.79 \\
+	\end{tabular}
+	\caption{Summary statistics for our train data (nine of twelve games).  Messages are long and only five percent are lies, creating a class imbalance.}
+	\label{tab:summarystats}
+\end{table}
+
+\subsection{Data overview}
+
+
+%
+Table~\ref{tab:summarystats} quantitatively summarizes our data.
+%
+Messages vary in length and can be paragraphs long
+(Figure~\ref{fig:wordfrequency}).
+%
+Close to five percent of all messages in the dataset are marked as
+lies and almost the same percentage (but not necessarily the same
+messages) are perceived as lies, consistent with the ``veracity
+effect''~\citep{levine-99}.
+%
+In the game discussed above, eight percent of messages are marked as
+lies by the sender and three percent of messages are perceived as lies
+by the recipient; however, the messages perceived as lies are rarely
+lies (Figure~\ref{fig:distribution}).
+
+
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.6\textwidth]{\autofig{LengthFrequency.pdf}}
+	\caption{Individual messages can be quite long, wrapping deception in pleasantries and obfuscation.	\dpcomment{Cristian suggested removing}}
+	\label{fig:wordfrequency}
+
+\end{figure}
+
+\subsection{Demographics and self-assessment}
+
+%\jbgcomment{This is too long winded.  Say what's interesting/useful	and move the rest to supplement. }
+
+%\jbgcomment{This title is not useful; make more precise}
+
+%\jbgcomment{Make the demographic information tighter.  I would suggest rephrasing as: topic sentence (we collect general, demographic information), the median player is X (give footnote with details and point to plots), and consider themselves able to detect lies.}
+
+%Working closely with users in this human user study allows to collect information that only the player can provide before and after the game. When users fill out the \textsc{irb} study consent form, we ask them to provide anonymous  demographic information.  We inquire about age bracket, gender, education level, English ability, and other languages spoken.  Additionally, we ask for Diplomacy experience and self-evaluation of lying and lie-detecting abilities.  All questions contain a ``Prefer Not to Answer'' response.  
+
+We collect anonymous demographic information from our study
+participants: the average player identifies as male, between 20 and 35
+years old, speaks English as their primary language, and has played
+over fifty Diplomacy games.\footnote{Our data skews 80\% male and 95\%
+  of the players speak English as a primary language.  Ages range from
+  eighteen and sixty-four.
+%
+Game experience is distributed across beginner, intermediate, and
+expert levels.}
+%
+Players self-assess their lying ability before the study.
+%
+The average player views themselves as better than average at lying
+and average or better than average at perceiving lies.
+%The charts of interest can be seen in Figures~\ref{fig:questions1}.
+
+ 
+ %, as seen in Figure~\ref{fig:questions2}.
+
+%\jbgcomment{Everything in present tense}
+
+%After the game, we ask users to describe their quality of annotation and provide insight into the game.  I
+In a post-game survey, players provide information on whom
+\textit{they} betrayed and who betrayed \textit{them} in a given game.
+%
+This is a finer-grained determination than the \textit{post hoc} analysis used in past work on
+Diplomacy~\citep{niculaelinguistic}.
+%
+We ask players to optionally provide linguistic cues to their lying
+and to summarize the game from their perspective.
+%(examples in Appendix, Table~\ref{tab:userfeedback}).
+
+\begin{table*}[t]
+	\small
+	
+	%seems fine.  Not sure about Cassandra \jbgcomment{I think the labels were wrong here, so I adjusted.  Let me know if I screwed this up.}
+	
+	\begin{tabularx}{\textwidth}{r  l   X X}
+		
+		& &\multicolumn{2}{c}{\textbf{Receiver's perception}} \\
+		
+		& &  \textbf{Truth }&  \textbf{Lie} \\
+		\toprule
+		\multirow{2}{*}{ \rotatebox[origin=r]{90}{\textbf{Sender's intention}}} & \textbf{Truth}
+		& \cellcolor{gray!25}\textbf{Straightforward}
+		Salut! Just checking in, letting you know the embassy is open, and if you decide to move in a direction I might be able to get involved in, we can probably come to a reasonable arrangement on cooperation.  Bonne journee!
+		& \textbf{Cassandra}
+		I don't care if we target T first or A first. I'll let you decide. But I want to work as your partner. \dots I literally will not message anyone else until you and I have a plan. I want it to be clear to you that you're the ally I want.
+		\\
+		& \textbf{Lie}
+		& \textbf{Deceived}
+		You, sir, are a terrific ally. This was more than you needed to do, but makes me feel like this is really a long term thing! Thank you.
+		&  \cellcolor{gray!25}\textbf{Caught}
+		So, is it worth us having a discussion this turn? I sincerely wanted to work something out with you last turn, but I took silence to be an ominous sign.
+		\\
+		\bottomrule
+	\end{tabularx}
+	\caption{Examples of messages that were intended to be
+          truthful or deceptive by the sender or receiver.  Most
+          messages occur in the top left quadrant
+          (Straightforward).  Figure~\protect{\ref{fig:distribution} shows the full distribution.  Both the intended and perceived properties
+          of lies are of interest in our study. }}
+	\label{tab:quadrant}
+\end{table*}
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.6\textwidth]{\autofig{Distribution}}
+	\caption{Most messages are truthful messages identified as the
+          truth.  Lies are often not caught.
+          Table~\protect{\ref{tab:quadrant}} provides an example from
+          each quadrant. \dpcomment{Cristian questioned is to merge
+            with above table, with raw count but without viz
+            \jbgcomment{too late}}}
+	\label{fig:distribution}
+\end{figure}
+
+\subsection{An ontology of deception}
+
+Four possible combinations of deception and perception can arise from
+our data.
+%
+The sender can be lying or telling the truth.
+%
+Additionally, the receiver can perceive the message as deceptive or
+truthful.
+%
+We name the possible outcomes for lies as Deceived or Caught, and the
+outcomes for truthful messages as Straightforward or
+Cassandra,\footnote{In myth, Cassandra was cursed to utter true
+  prophecies but never be believed.  For a discussion of Cassandra's
+  curse \textit{vis a vis} personal and political oaths, see
+  \citet{torrance-15}.} based on the receiver's annotation (examples
+in Table~\ref{tab:quadrant}, distribution in
+Figure~\ref{fig:distribution}).
+
+

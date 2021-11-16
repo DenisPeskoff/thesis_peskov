@@ -1,0 +1,78 @@
+	
+\section{Automatically Generating a Speech Dataset}
+\label{sec:data}
+
+Neural networks require a large training corpus, but recording
+hundreds of thousands of questions is not feasible. 
+%
+Methods for collecting large scale audio data include Generative Adversarial Networks~\citep{donahue2018exploring} and manual recording~\citep{lee2018odsqa}.
+%
+For manual recording, crowd-sourcing with the required quality control (speakers who say ``cyclohexane'' correctly) is prohibitively expensive.
+%
+As an alternative, we generate a data-set with Google Text-to-Speech on 96,000 factoid questions from a trivia game called Quizbowl~\citep{Boyd-Graber:Feng:Rodriguez-2018}, each with 4--6 sentences for a total of over 500,000 sentences.\footnote{\url{http://cloud.google.com/text-to-speech}}
+%
+We then decode these utterances using the Kaldi chain model~\citep{peddinti2015jhu}, trained on the Fischer-English dataset~\citep{cieri2004fisher} for consistency with past results on mitigating \asr{} errors in \textsc{mt}~\citep{sperber17emnlp}.  
+%
+This model decodes enough noise into our data to test mitigation strategies.\footnote{
+This model has a Word Error Rate (\textsc{wer}) of 15.60\% on the eval2000 test set.
+%
+  The \textsc{wer} increases to 51.76\% on our \qb{} data, which contains out of domain vocabulary.   
+  %
+  Since there is no existing work in question answering, we use machine translation as proxy for determining an appropriate Word Error Rate, as intentional noise has been added to this subdomain~\citep{michel2018mtnt, belinkov2017synthetic}.
+  %
+  The most \textsc{bleu} improvement in machine translation under noisy conditions could be found in this middle  \textsc{wer} range, rather than in values below 20\% or above 80\%~\citep{sperber17emnlp}. 
+  %
+   Retraining the model on the \qb{} domain would mitigate this noise;
+however, in practice one is often at the mercy of a pre-trained
+recognition model due to changes in vocabularies or speakers.
+%
+}
+
+%
+
+
+\subsection{Why Question Answering is challenging for \abr{asr}}
+\label{sec:noise}
+
+Question Answering (\abr{qa}) requires the system to provide a correct answer out of many candidates based on the question's wording. 
+%
+\asr{} changes the features of the recognized text in several important ways: the overall vocabulary is quite different and important words are corrupted.
+%
+First, it reduces the overall vocabulary.  
+%
+In our dataset, the vocab drops from 263,271 in the original data to a mere 33,333.
+%
+This is expected, as our \textsc{asr} system only has 42,000 words in its vocab, so the long tail of the Zipf's curve is lost.
+%
+Second, unique words---which may be central to answering the question---are lost or misinterpreted; over 100,000 of the words in the original data occur only once.
+%
+Finally, \asr{} systems tend to delete unintentionally delete words, which makes the sentences shorter.  In our \qb{} data, the average number of words decreases from 21.62 to 18.85 per sentence.
+
+The decoding system is able to express uncertainty by predicting \unk{}.
+%
+These account for slightly less than 10\% of all our word tokens, but is a top-2 prediction for 30\% of the 260,000 original words.
+%
+For \textsc{qa}, words with a high \textsc{tf-idf} measure are valuable.
+While some words are lost, others can likely be recovered: ``hellblazer' becoming ``blazer'', ``clarendon'' becoming ``claritin''.
+%
+We evaluate this by fitting a \textsc{tf-idf} model on the Wikipedia dataset and then comparing the average \textsc{tf-idf} per sentence between the original and the \textsc{asr} data.  
+%
+The average \textsc{tf-idf} score, the most popular metric for evaluating how important a word is for a document, drops from 3.52 to 2.77 per sentence.
+%
+Examples of this change can be seen in Figure~\ref{fig:noise_analysis}.
+
+For generalization, we test the effect of noise on two types of distinct questions.  
+%
+\qb{} questions, which are generally four to six sentences long, test a user's depth of knowledge; early clues are challenging and obscure but they progressively become easy and well-known.  
+%
+Competitors can answer these types of questions at any point.
+%
+Computer \abr{qa} is competitive with the top players~\citep{yamada2018studio}. 
+%
+Jeopardy! questions are single sentences and can only be answered after the question ends.  To test this alternate syntax, we use the same method of data generation on a dataset of over 200,000 Jeopardy questions~\citep{Dunn2017SearchQAAN}.
+
+
+
+
+
+

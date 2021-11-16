@@ -1,0 +1,172 @@
+% intro
+\section{Qualitative Analysis}
+\label{sec:analysis}
+
+
+\begin{table*}[t]
+	\small
+	\begin{tabularx}{\textwidth}{r  l   X X}
+		& &\multicolumn{2}{c}{\textbf{Model Prediction}} \\
+		
+		& &  \textbf{Correct }&  \textbf{Wrong} \\
+		\toprule
+		\multirow{2}{*}{ \rotatebox[origin=r]{90}{\textbf{Player Prediction}}} & \textbf{Correct}
+		& \cellcolor{gray!25}\textbf{Both Correct}
+		Not sure what your plan is, but I might be able to support you to Munich.
+		& \textbf{Player Correct}
+		Don't believe Turkey, I said nothing of the sort. I imagine he's just trying to cause an upset between us. 
+		\\
+		& \textbf{Wrong}
+		& \textbf{Model Correct}
+		Long time no see. Sorry for the stab earlier. I think we should try to work together to stop france from winning; if we work together we can stop france from getting 3 more centers, and then we will all win in a 3, 4, or 5 way draw when the game is hard-capped at 1910.
+		&  \cellcolor{gray!25}\textbf{Both Wrong}
+		I'm considering playing fairly aggressive against England and cutting them off at the pass in 1901, your support for that would be very helpful.
+		\\
+                \bottomrule
+	\end{tabularx}
+	\caption{An example of an  \alie{} detected (or not) by both players and our best computational model (Context \textsc{lstm} + Power) from each quadrant.  Both the model and the human recipient are mostly correct overall (Both Correct), but they are both mostly wrong when it comes to specifically predicting lies (Both Wrong).}
+        \jbgcomment{Once takeaway is finalized, needs to be recapitulated here.}
+	\label{tab:predictionquadrant}
+\end{table*}
+
+
+%\begin{table*}
+%\centering
+%\begin{tabular}{lp{1cm}p{1cm}p{12cm}}
+%	  \toprule
+%\# & \textbf{Player} & \textbf{Model} & \textbf{Message}\\
+%  \hline
+%1 & Lie & Lie & I think we should leave the Black Sea as a DMZ, as I would like to 100\% ensure I get Rum and I'm worried about Austria taking it. So if we can agree to leave it as a DMZ I can move my fleet to rum \\
+%  %\hline
+%2 & Lie & Truth &  Don't believe Turkey, I said nothing of the sort. I imagine he's just trying to cause an upset between us. \\
+%  %\hline
+%3 &  Truth & Lie &  Long time no see. Sorry for the stab earlier. I think we should try to work together to stop france from winning; if we work together we can stop france from getting 3 more centers, and then we will all win in a 3, 4, or 5 way draw when the game is hard-capped at 1910 \\
+%  %\hline
+%4 &  Truth & Truth & I'm considering playing fairly aggressive against England and cutting them off at the pass in 1901, your support for that would be very helpful. \\
+%\bottomrule
+%\end{tabular}
+%\caption{We provide examples of predictions made by our best model (Context LSTM with Power) and a player receiving the message.  All these messages were \alie{}s. }
+% \label{tab:manualanalysis}
+%\end{table*}
+
+
+%\jbgcomment{Explain Cassandra reference}
+
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{lcc}
+		& {\bf Model} & {\bf Model} \\
+		& {\bf Correct} & {\bf Wrong} \\
+		\toprule
+		{\bf Player Correct} & 10 & 32 \\
+		{\bf Player Wrong} & 28 & 137 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Conditioning on only lies, most messages are now identified incorrectly by both our best model (Context \textsc{lstm} + Power) and players.} 
+	\label{tab:playermodelcomparisonoflies}
+\end{table}
+
+%\jbgcomment{Use quotes correctly.  At least discuss player errors here, can save model discussion for later if you want.}
+
+This section examines specific messages where both players and machines
+are correctly identifying lies and when they make mistakes on our test set.
+%
+Most messages are correctly predicted by both the model and players
+(2055 of 2475 messages); but this is because of the veracity effect.
+%
+The picture is less rosy if we only look at messages the sender marks
+as \alie{}: both players and models are generally wrong
+(Table~\ref{tab:playermodelcomparisonoflies}).
+
+Both models and players can detect lies when liars get into specifics.
+%
+In Diplomacy, users must agree to help one another through orders that
+stipulate ``I will help another player move from X to Y''.
+%
+The in-game term for this is ``support''; half the messages where
+players and computers correctly identify lies contain this word, but it
+rarely occurs in the other quadrants.
+
+\jbgcomment{Put in parentheses exactly how often in appears.}
+
+Models seem to be better at not falling for vague excuses or
+fantastical promises in the future.
+%
+Players miss lies that promise long-term alliances, involve extensive
+apologies, or attribute motivation as coming from other countries'
+disinformation~(\textit{Model Correct}).
+%
+Unlike our models, players have access to conversations with other
+players and accordingly players can detect lies that can easily be
+verified through conversations with other players~(\textit{Player
+  Correct}).
+
+However, ultimately most lies are believable and fool both models and
+players~(\textit{Both Wrong}).
+%
+For example, all messages that contain the word ``true'' are predicted
+as truthful by both models and players.
+%
+Many of these messages are relatively tame;\footnote{Examples include
+  ``It's true---[Budapest] back to [Rumania] and [Serbia] on to
+  [Albania] could position for more forward convoys without needing
+  the rear fleet\dots'' and ``idk if it's true just letting u know
+  since were allies''.} confirming the Pinocchio effect found by
+\citet{vanswol-12}.
+%
+If liars can be detected when they wax prolix, perhaps the best way to
+avoid detection is to be terse and to the point.
+
+\jbgcomment{Removed bit about emoji, need to know how often it appears in ``normal'' text}
+
+%
+%Emojis are similarly hapless. They are more likely than average to predicted correctly as truthful, but then mistaken for truthful in a lie.  \dpcomment{cheesy would be too add a :( emoji here)}
+
+Sometimes additional contextual information helps models improve over player predictions.
+%
+For example, when \player{France} tells \player{Austria} ``I am worried
+about a steamroller Russia Turkey alliance'', the message is incorrectly perceived
+as truthful by both the player and the single-message model.
+%
+However, once the model has context---a preceding question asking if
+\player{Austria} and \player{Turkey} were cooperating---it can
+detect the lie.
+%
+%In reality, \player{France} had an alliance with \player{Turkey} against \player{Austria}
+%and was providing disinformation!
+%
+%Partially resolved?  They're not referenced that often \jbgcomment{\dpcomment{ "Past Diplomacy Features"  Or something else?  \jbgcomment{No, describe what they are ``wordlist features'' or something like that}} Let's create a common, consistent way to refer to these features and consistently backpoint to where they are rigorously defined}
+%
+
+%Linguistic features from past research~\citep{LevitanLinguisticCuesDeception2018, niculaelinguistic} include the use of conditional language, the use of ``but'', etc. 
+
+Finally, we investigate categories from the \wordlist{}~\citep{
+  niculaelinguistic} word lists.
+%
+Lies are more likely to contain
+\textit{subjectivity} and \textit{premises} while
+true messages include \textit{expansion} phrases (``later'',
+``additionally'').  We also use specific words in the bag of words logistic regression
+model.
+%
+The coefficient weights of words that express sincerity (e.g., ``sincerely'', ``frankly'') and
+apology (e.g., ``accusation'', ``fallout'', ``alternatives'') skew toward
+\alie{} prediction in the logistic regression model.
+%
+More laid back appellations (e.g., ``dude'', ``man'') skew towards
+truthfulness, as do words associated with reconnaissance (e.g., ``fyi'',``useful'', ``information'') and time (e.g.,
+``weekend'', ``morning'').
+%
+Contested areas on the Diplomacy map, such as
+Budapest and Sevastopol, are more likely to be associated with lies,
+while more secure ones like Berlin, are more likely to be associated
+with truthful messages.
+%
+%Intuitively, multiple players make plans to conquer the same place; only one will prove victorious in claiming the territory, but the lies about it can be made by any of them.
+%
+
+%\jbgcomment{\dpcomment{ literally from the linear regression.  In the "predicted as a lie" these are strongly weighted towards truth or lie.  Is this poorly phrased?  Should there be explicit sentence? \jbgcomment{Yes, and avoid things like ``disproportionately'' unless you can back it up.  Make it line up specifically to feature sets in logistic regression.}} Why would sincerely be perceived as truthful?  What evidence do you have for that?}
+
+%\jbgcomment{\dpcomment{ ties into accessibility comment in earlier section.  I actually think this is notably more dense than earlier } Unpack Diplomacy inside-baseball more.}
+

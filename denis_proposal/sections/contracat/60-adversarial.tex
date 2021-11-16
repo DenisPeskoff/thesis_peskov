@@ -1,0 +1,357 @@
+
+\section{Adversarial Attacks}
+ContraPro, a contrastive challenge set, has limitations and our methodology for creating our own dataset addresses them.
+
+\subsection{About ContraPro}
+\label{sec:contrapro}
+
+ContraPro is a contrastive challenge set  for English$\rightarrow$German pronoun translation evaluation. 
+%
+This dataset uses an  \textit{automated} approach, discussed in Chapter~\ref{ch:unspecialized}.
+%
+The automatic nature makes it subject to manipulation and prevents it from fully elucidating the limitations of neural coreference resolution. 
+%
+The set consists of English sentences containing an anaphoric pronoun ``it'' and the corresponding German translations (e.g., ``Give me your hand, ah, it's soft and hot, and it feels pleasant''$\overrightarrow{}$``Gib deine Hand, ah, sie ist weich und warm, und wohlig fühlt sie sich an.'').
+%
+It contains three contrastive translations, 
+differing based on the gender of the translation of \textit{it}: \textit{er}, \textit{sie}, or \textit{es}.
+%
+The challenge set artificially balances the  amount of sentences where \textit{it} is translated to each of these three German pronouns.
+%
+The appropriate antecedent may be in the main sentence or in a previous sentence. 
+%
+For evaluation, a model needs to produce scores for all three possible translations, 
+which are compared against ContraPro's gold labels.
+
+
+We create automatic adversarial attacks on ContraPro that modify theoretically inconsequential parts of the context sentence before the occurrence of \emph{it}. 
+%
+Contrary to the expectation that a transformer model would be able to handle inconsequential priming, coreference accuracy degrades in all adversarial attacks.
+
+
+\subsection{Adversarial Attack Generation}
+\label{sec:templates}
+
+Our three modifications are:
+
+\begin{enumerate}[noitemsep]
+	\item \textbf{Phrase Addition}: Appending and prepending phrases containing implausible antecedents:
+	\vspace{.1cm}
+	The Church is merciful \emph{\underline{but that's not the point}}. It always welcomes the misguided lamb.
+	\vspace{.2cm}
+	
+	\item \textbf{Possessive Extension}: Extending original antecedent with possessive noun phrase:
+	\vspace{.1cm}
+	I hear \sout{her} \emph{\underline{the doctor's}} voice! It resounds to me from heights and chasms a thousand times!
+	
+	\vspace{.2cm}
+	\item \textbf{Synonym Replacement}: Replacing original German antecedent with synonym of different gender (note: \emph{der Vorhang} (masc.) and \emph{die Gardine} (fem.) are synonyms meaning \emph{curtain}):
+	
+	The curtain rises. It rises. $\rightarrow$ \sout{Der Vorhang} \emph{\underline{Die Gardine}} geht hoch. \sout{Er} \emph{\underline{Sie}} geht hoch.
+\end{enumerate}
+
+
+Phrase Addition can be applied to all 12,000 ContraPro examples. 
+%
+The second and third attack can only be applied to 3,838 and 1,531 examples, due to the required sentence contingencies.  
+
+\subsubsection{Phrase Addition}
+%As shown in the example in Table~\ref{tab:attacks} 
+This attack modifies the previous sentence
+by appending phrases such as ``\dots{}\textit{but he wasn't sure}'' and also prepending phrases such as ``\emph{it is true}:\dots{}''.
+%
+A range of other simple phrases can be used, which we leave out for simplicity.  All phrases we tried provided lower scores.
+%
+These attacks either introduce a human entity or an event reference \textit{it} (e.g.,  \textit{``it is true''}) which are both not plausible antecedents for the anaphoric \textit{it}.
+% In the case of  ``it is true:..." we also created attacks with  ``that is true" and attacks that append "...and it is true.". This measures the difference between ``it'' and ``that'' and the role of distances in anaphoric pronoun translation.  
+% are these details important?
+
+\subsubsection{Possessive Extension}
+This attack introduces a new human entity by extending the original antecedent \emph{A} with a possessive noun phrase e.g., ``\textit{the woman's A}''. 
+%
+Only two-thirds of the 12,000 ContraPro sentences are linked to an antecedent phrase. Grammar and misannotated antecedents exclude half of the remaining phrases.
+% For example regarding grammar, an antecedent in ContraPro such as \textit{this one/der hier}, cannot be extended with"\textit{the woman's\dots}".
+% \dscomment{Is this necessary?}
+We put \textsc{pos}-tag constraints on the antecedent phrases before extending them. 
+% with possessive Noun Phrases. 
+%
+This filters our subset to 3,838 modified examples. 
+%
+Our possessive extensions can be humans (\textit{the woman's}), organisations (\textit{the company's}) and names (\textit{Maria's}).
+
+\subsubsection{Synonym Replacement}
+This attack modifies the original German antecedent by replacing it with a German synonym of a different gender. 
+%
+For this we first identify the English antecedent and its most frequent synset in WordNet \citep{miller1995wordnet}.
+% , as a word sense disambiguation baseline. 
+% no further reference about this
+%
+We obtain a German synonym by mapping this WordNet synsets to GermaNet \citep{hamp-feldweg-1997-germanet} synsets.
+%
+Finally, we modify the correct German pronoun translation to correspond to the gender of the antecedent synonym.
+
+Approximately one quarter of the nouns in our ContraPro examples are found in GermaNet.  
+In 1,531 cases, a synonym of different gender could be identified. 
+
+Understanding the pronoun/noun relationship is needed to score well on the Synonym Replacement attack. This attack gets to the core of whether \nmt{} uses \coref{} heuristics instead.
+
+We evaluate a random sample of 100 auto-modified examples as a quality control metric.  
+%
+There are 11 issues with semantically-inappropriate synonyms. 
+%
+Overall, in 14 out of 100 cases, the model switches from correct to incorrect predictions because of synonym-replacement.
+%
+Only 4 out of these 14 cases come from the questionable synonyms, showing that the drop in ContraPro scores is meaningful.
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[width = \linewidth]{\figfile{F1.pdf}}
+	\caption{Results with the sentence-level Baseline and \textsc{concat} on ContraPro and three adversarial attacks. 	
+		The adversarial attacks modify the context, therefore the Baseline model's results on the attacks are unchanged and we omit them.  \textbf{Phrase}: prepending ``it is true: \dots''. \textbf{Possessive}:  replacing original antecedent \emph{A}  with ``Maria's \emph{A}''. \textbf{Synonym}: 
+		replacing the original antecedent with different-gender synonyms.  Results for Phrase Addition are computed based on all 12,000 ContraPro examples, while for Possessive Extension and Synonym Replacement we only use the suitable subsets of 3,838 and 1,531 ContraPro examples. 
+	}
+	\label{fig:contrapro}
+\end{figure}
+
+
+
+\subsubsection{Evaluating Adversarial Attacks }
+
+
+Intuitively, the adversarial attacks should not contribute to large drops in scores, since  no meaningful changes are being made.
+%
+If the model accuracy drops some, but not all the way to the original sentence-level baseline (Section~\ref{sec:contracatmodel}),  we can conclude that the concatenation model handles \coref{}, but likely with brittle heuristics.
+%
+If the model accuracy drops all the way to the baseline, then the model is memorizing the inputs.
+%
+These results can expose potential issues with the model, but it will still be difficult to pinpoint the specific problems. 
+%
+This reveals a larger issue with pronoun translation evaluation that cannot be addressed with simple adversarial attacks on existing general-purpose challenge sets. 
+%
+We propose \contracat{}, a more systematic approach that targets each of the previously outlined \coref{} pipeline steps with data synthetically generated from corresponding templates.
+
+Automatic adversarial attacks offer less freedom than templates as many systematic modifications cannot be applied to the average sentence.
+%
+Thus, our \contracat{} templates will be built on the hypothetical coreference pipeline in Section~\ref{sec:corefpipeline} that target each of the three steps:
+%
+i) \stepone{}, ii) \steptwo{} and iii) \stepthree{}. 
+%Step ii) (Coreference resolution) is targeted in more detail with additional sub-steps.
+%
+Our minimalistic templates draw entities from sets of animals, human professions~\citep{mccoy2019right},
+foods, and drinks, along with associated verbs and attributes. 
+%
+We use these sets to fill slots in our templates. 
+%
+Animals and foods are natural choices for subject and object slots referenced by \emph{it}.
+%
+Restricting our sets to interrelated concepts with generically applicable verbs---all animals eat and drink---ensures semantic plausibility.
+%
+Other object sets, such as buildings, would cause semantic implausibility with certain verbs.  
+
+\subsubsection{Template Generation}
+\label{sec:template}
+
+\begin{table}[t]
+	\small
+	\centering
+	\begin{tabular}{p{4.5cm} p{9cm} }
+		\textbf{Template Target} & \textbf{Example} \\
+		\hline
+		
+		\noalign{\vskip 2mm} 
+		\textbf{Priors} & \\
+		Grammatical Role & The \emph{\textbf{cat}} ate the \emph{\textbf{egg}}. It (\cat{}/{\textit{egg}}) was big. \\
+		Order & I stood in front of the \emph{\textbf{cat}} and the \emph{\textbf{dog}}. It (\cat{}/\textit{dog}) was big. \\
+		Verb & Wow! She unlocked it. \\
+		
+		
+		\noalign{\vskip 2mm} 
+		\rowcolor{gray!25}
+		\textbf{\stepone{}} & \\
+		\rowcolor{gray!25}
+		Filter Humans & The \textit{\textbf{cat}}  and the \textit{actress} were happy. However it (\cat{}) was happier.  \\
+		
+		\noalign{\vskip 2mm} 
+		\textbf{\steptwo{}} & \\
+		Lexical Overlap & The \textit{\textbf{cat}} ate the apple and the \textit{owl} drank the water. It (\cat{}/ \textit{dogFir}) ate the apple quickly. \\
+		World Knowledge & The \textit{\textbf{cat}} ate the \textit{cookie}. It (\cat{}) was hungry. \\
+		% \dscomment{Changed is hungry to was hungry for past tense consistency.}
+		Pleonastic it & The \emph{cat} ate the \emph{sausage}. It was raining. \\
+		Event Reference  & The \emph{cat} ate the \emph{carrot}. It came as a surprise. \\
+		
+		\rowcolor{gray!25}
+		\noalign{\vskip 2mm} 
+		\textbf{\stepthree{}} & \\
+		\rowcolor{gray!25}
+		Antecedent Gender &
+		I saw a \textit{\textbf{cat}}. It(\cat{}) was big. 
+		$\rightarrow$
+		\newline
+		Ich habe eine Katze gesehen. Sie (\cat{}) war gro{\ss}.
+	\end{tabular}
+	\caption{Template examples targeting different \coref{} steps and substeps. 
+		% We used sets of associated nouns, i.e.,, \{dog, cat, pig, 
+		%\} for Animals.
+		% is this important here? In any case, it is not clear 
+		For German, we create three versions with \emph{er}, \emph{sie}, or \emph{es} as different translations of \emph{it}.
+		% For the German translation we created three versions of the template with \emph{er}, \emph{sie}, or \emph{es} as different translations of \emph{it}. 
+		% For consistency with how our model is trained, sentences are separated by $<$SEP$>$.
+		% moved this to Model
+	}
+	\label{tab:templates}
+\end{table}
+
+Our templates consist of a \emph{previous sentence} that introduces at least one entity and a \emph{main sentence} containing the pronoun \emph{it}.
+%
+We use contrastive evaluation to judge anaphoric pronoun translation accuracy for each template; we create three translated versions for each German gender corresponding to an English sentence, e.g., \textit{``The cat ate the egg. It rained.''} and the corresponding \textit{``Die Katze hat das Ei gegessen. \emph{Er/Sie/Es} regnete''}.
+%
+To fill a template, we only draw pairs of entities with two different genders, i.e., for animal $a$ and food $f$: gender($a$) $\neq$ gender($f$). 
+%
+This way we can determine whether the model has picked the right antecedent.
+
+First, we will create templates that analyze priors of
+the model for choosing a pronoun when no correct translation is obvious. 
+%
+Then, we will create templates with correct translations, guided by the three broad coreference steps.
+% \dscomment{This paragraph may not be necessary. We can mention it in Priors.}
+Table~\ref{tab:templates} provides examples for our templates.
+
+
+% \subsubsection{Biases}
+\subsubsection{Priors}
+
+% \afcomment{I added the next sentence, I am bit concerned that people might get confused between the priors and the other templates, which are really different. In fact, even after adding this sentence I am still concerned about this.}
+
+Our templates that test prior biases do not have a correct answer, but help to understand the model's biases.
+%
+We will expose three priors with our templates: i) grammatical roles prior (e.g., subject)
+ii) position prior  (e.g., first antecedent) and iii) a general prior if no antecedent and only a verb is present.
+
+For i), we will create a Grammatical Role template where both subject and object are valid antecedents. 
+%
+
+For ii), we will create a Position template where two objects are enumerated as shown in Table~\ref{tab:templates}. 
+%
+We will create an additional example where the entities order is reversed and test if there are priors for specific nouns or alternatively positions in the sentence.  
+
+For iii), we will create a Verb template, expecting that certain transitive verbs trigger certain object gender choice. 
+%
+We will use 100 frequent transitive verbs and create sentences such as the example in Table~\ref{tab:templates}.
+
+
+\subsubsection{Markable Detection with a Humanness Filter}
+Before doing the actual \coref{}, the model will need to identify all possible entities that \textit{it} can refer to. 
+%
+We will construct a template that contains a human and animal which are in principle plausible antecedents, if not for the condition that \emph{it} does not refer to people. 
+%
+For instance, the model should always choose \emph{cat} in \textit{`` The \emph{actress} and the \emph{cat} are hungry. However \emph{it} is hungrier.''}. 
+
+\subsubsection{Coreference Resolution}
+Having determined all possible antecedents, the model will have to choose the correct one, relying on semantics, syntax, and discourse.
+%
+The pronoun \textit{it} can in principle be used as an \emph{anaphoric} (referring to entities), \emph{event reference} or \emph{pleonastic} pronoun \citep{loaiciga-etal-2017-disambiguating}.
+%
+For the anaphoric \textit{it}, we identify two major ways of identifying the antecedent: lexical overlap and world knowledge.  
+%
+Our templates for these categories are meant to be simple and solvable.  
+
+\textbf{Overlap}: Broadly speaking the subject, verb, or object can overlap from the previous sentence to the main sentence, as well as combinations of them. 
+%
+This gives us five templates: i) subject-overlap ii) verb-overlap iii) object-overlap iv) subject-verb-overlap and v) object-verb-overlap.
+
+%
+We always use the same template for the context sentence, e.g., \textit{``The \textbf{cat} ate the apple and the \textbf{owl} drank the water.''}. 
+%
+For the object-verb-overlap we would then create the main sentence \textit{``It ate the apple quickly.''} and expect the model to choose \emph{cat} as antecedent.
+%
+To keep our overlap templates order-agnostic, we vary the order in the previous sentence by also creating \textit{``The \textbf{owl} drank the water and the \textbf{cat} ate the apple.''}
+
+\textbf{World Knowledge}: \coref{} has been traditionally seen as challenging as it requires  world knowledge.
+%
+Our templates will test simple forms of world knowledge by using attributes that either apply to animal or food entities, such as \textit{cooked} for food or \textit{hungry} for animals.
+%
+We then evaluate whether the model chooses e.g., \emph{cat} in \textit{``The \textbf{cat} ate the cookie. It was hungry.''}
+%
+The model occasionally predicts answers that require world knowledge, but most predictions are guided by a prior for choosing the neuter \emph{es} or a prior for the subject.
+
+% \bkcomment{should i do this?:}
+% To see if the model exhibits world knowledge when the bias is not triggered as much, we construct a less natural but still plausible template: ``I looked at the \emph{cat} and the \emph{ice cream}. It had a sweet taste''. This leads to XXX.
+% \dscomment{Commenting this for now.}
+
+\textbf{Pleonastic and Event Templates}: For the other two ways of using \emph{it}, event reference and pleonastic-it, we again create a default previous sentence (\textit{``The \textbf{cat} ate the \emph{apple}.'')}. 
+%
+For the main sentence, we used four typical pleonastic and event reference phrases such as \textit{``It is a shame''} and \textit{``It came as a surprise''}.  
+%
+We expect the model to correctly choose the neuter \emph{es} as a translation every time.  
+
+\subsubsection{Translation to German}
+\label{gender_template}
+
+After \coref{}, the decoder has to translate from English to German.
+%
+In  our contrastive scoring approach the translation of the English antecedent to German is already given.
+%
+However the decoder is still required to know the gender of the German noun to select between \emph{er}, \emph{sie} or, \emph{es}. 
+%
+We will test this with a list of concrete nouns selected from \citet{Brysbaert2014ConcretenessRF}, which we filter for nouns that occur more than $30$ times in the training data. 
+%
+This selects $2051$ nouns that are substituted for $N$ in: \textit{``I saw a $N$. It was \{big, small\}.''.}
+
+\subsection{Results} \label{template_results}
+
+The \textsc{concat} model becomes less accurate when actual \coref{} is required. 
+%
+It frequently falls back to choosing the neuter \emph{es} or preferring a position (e.g., first of two entities) for determining the gender.
+%
+For \emph{Markable Detection} the model always predicts the neuter \emph{es} regardless of the actual genders of the entities.
+
+% When the model was tested to do \coref{} by looking at different types of overlaps, it failed to recognize the overlap and had instead a general preference for one of the two clauses. 
+In the Overlap template, the model fails to recognize the overlap and has a general preference for one of the two clauses.
+%
+For instance in the case of verb-overlap, the model had a solid accuracy of $64.1\%$ if the verb overlapped from the first clause (\textit{``The cat ate and the dog drank. It ate a lot.''}) but a weak accuracy of $39.0\%$ when the verb overlapped from the second clause (\textit{``The cat ate and the dog drank. It drank a lot.''.}) 
+%
+The overall accuracy for the overlap templates is $47.2\%$, with little variation across the types of overlap. 
+% \bkcomment{should i report overall score here or score for all 5 overlaps?}
+% Surprisingly 
+Adding more overlap, e.g., by overlapping both the verb and object (\textit{``It ate the apple happily''}), yields no improvement. 
+%
+Overall, the model pays very little attention to overlaps when resolving pronouns.
+% \dscomment{not sure if this is good or not}
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[width = \linewidth]{\figfile{F2.pdf}}
+	\caption{Results comparing the sentence-level baseline to \textsc{concat} on Contra\abr{cat}.  Pronoun translation pertaining to World Knowledge and language-specific Gender Knowledge benefits the most from additional context.}
+	\label{fig:templates}
+\end{figure}
+
+
+We also see weak performance for world knowledge. An accuracy of $55.7\%$ is slightly above the heuristic of randomly choosing an entity ($=50.0\%$).
+% \dscomment{Check}
+% This means there is some small world knowledge in the model, however not enough to solve the task.
+With a strong bias for the neuter \emph{es}, the model has a high accuracy of $96.2\%$ for event reference and pleonastic templates, where \emph{es} is always the correct answer.
+%
+Based on the strong performance on the Gender template in Section~\ref{gender_template}, we conclude the model consistently memorized the gender of concrete nouns.
+%
+Hence, \coref{} mistakes stem from Step 1 or Step 2, suggesting that the model failed to learn proper \coref{}.
+
+
+
+\begin{table}[ht]
+	\small
+	\centering	
+	\begin{tabular}{l l}
+		
+		\multicolumn{2}{l}{\textbf{Antecedent-free augmentation}} \\
+		\textit{Source} &
+		You let me worry about that. $<$SEP$>$ How much you take for \underline{it}? \\
+		\textit{Reference} &
+		Lassen Sie das meine Sorge sein. $<$SEP$>$ Wie viel kostet \underline{er}? \\
+		\textit{Augmentation 1} &
+		Lassen Sie das meine Sorge sein. $<$SEP$>$ Wie viel kostet \underline{sie}? \\
+		\textit{Augmentation 2} &
+		Lassen Sie das meine Sorge sein. $<$SEP$>$ Wie viel kostet \underline{es}? \\
+	\end{tabular}
+	\caption{Examples of training data augmentations. The source side of the augmented examples remains the same.}
+	\label{table:manual-examples-augmentations-main}
+\end{table}

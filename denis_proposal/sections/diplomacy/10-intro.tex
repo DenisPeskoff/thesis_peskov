@@ -1,0 +1,150 @@
+Expert-created datasets can create datasets of a quality unachievable with generalists.  
+%
+This has a twofold benefit.
+%
+First, the accuracy, rather than the size, of the data allows the dataset to withstand the test of time.\footnote{The Penn Treebank~\citep{marcus1993building2}, which used graduate students in linguistics and spanned three years in the early 1990s, remains a staple of Computational Linguistics curriculum today}.
+%
+Second, tasks that require long-term commitment and complexity become possible.  
+%
+This result justifies the large investment of time, relationship-building, and money.  
+
+As a contrast to the earlier crowd-sourced work, we create a deception dataset using only experts.
+%
+Participants---that are engaged in the task and  are appropriately compensated---both \textit{generate} and \textit{annotate} data in the span of a game that usually lasts over a month. 
+%  
+The resulting product is a gold standard of conversational \nlp{} data in terms of quality of language, diversity, and naturalness.\footnote{Denis Peskov, Benny Chang, Ahmed Elgohary, Joe Barrow, Cristian Danescu-Niculescu-Mizil, and Jordan Boyd-Graber. 2020. It Takes Two to Lie: One to Lie and One to Listen. In Proceedings of The Association for Computational Linguistics.\\
+Peskov was responsible for designing the task, gathering the participants, running the games, building half the models, part of the data analysis, the visualizations, and the paper writing.}  
+%
+The conversations and annotations thereof would not be possible without experts from the community.
+
+\section{Where Does One Find Long-Term Deception?}
+\label{sec:intro}
+
+
+A functioning society is impossible without trust.
+%
+In online text interactions, users are typically
+trusting~\citep{shneiderman2000designing}, but this trust can be
+betrayed through false identities on dating sites~\citep{toma2012lies},
+spearphishing attacks~\citep{Dhamija2006WhyPW},
+sockpuppetry~\citep{kumar_army_2017} and, more broadly, disinformation
+campaigns~\citep{kumar_false_2018}.
+%
+Beyond such one-off antisocial acts directed at strangers, deception
+can also occur in sustained relationships, where it can be
+strategically combined with truthfulness to advance a long-term
+objective~\citep{ Cornwell2001LoveOT, kaplar2004enigma}.
+
+% Computational methods to understand and mitigate such anti-social behaviors have relied on the availability comprehensive datasets with gold-label annotations.
+%%pre DNM
+% A functioning society is impossible without trust.
+% %
+% In online text interactions, users are typically
+% trusting~\citep{shneiderman2000designing}, but this trust can be
+% betrayed through false identities on dating sites~\citep{toma2012lies},
+% spearphishing attacks~\citep{Dhamija2006WhyPW}, and malicious
+% rumors~\citep{Qazvinian2011RumorHI}.
+% %
+% Other violations of the online social compact such as spam
+% e-mail have been mitigated through machine learning~\citep{graham-03}:
+% find the problem and hide it from view.
+% %
+% However, this approach has not been applied to text deception because
+% we lack large enough gold-standard deception datasets for training
+% machine learning algorithms.
+%\jbgcomment{Address Cristian's point that  this dataset is unique because it has sustained interactions, not just one-offs}
+
+We introduce a dataset to study the strategic use of
+deception in long-lasting relationships.
+%
+To collect reliable ground truth in this complex scenario, we design
+an interface for players to naturally generate and annotate
+conversational data while playing a negotiation-based game called
+Diplomacy.
+%
+These annotations are done in \textit{real-time} as the players send
+and receive messages.
+%
+While this game setup might not directly translate to real-world
+situations, it enables computational frameworks for studying deception
+in a complex social context while avoiding privacy issues.
+
+
+%%% pre DNM
+% This work rectifies this lacuna through a large dataset of
+% creative messages annotated with deception---not just one-off messages but sustained interactions in a complex relationship.
+% %
+% We design an interface that allows users to naturally generate and
+% annotate conversational data while playing the game called Diplomacy.
+% %
+% These annotations are done in \textit{real-time} on sent and received
+% messages.  
+% %
+% Using a game allows us to avoid privacy issues in a research topic fraught with them.  
+% %
+
+
+%\jbgcomment{Troy is a good reference, but it isn't a text-based
+  %interaction, so we should probably avoid it.  Reworked new
+ % paragraph, but needs citeps.}
+
+%DONE \jbgcomment{ This is good, but should probably be in related
+%work with appropriate citations: court transcripts of perjury, emails
+%from malicious hackers, and surreptitious user recordings.  But
+%real-world data comes with real-world complications and privacy
+%concerns. Therefore, we use an artificial construct that allows us to
+%gather pertinent language data without any risk.}
+
+%moved\jbgcomment{ Again, this is good, but probably should be later
+%in a section about our formal definition:}
+
+\begin{table}[t]
+	\centering
+	\small
+	\begin{tabular*}{\linewidth}{p{10cm}p{2cm}p{2cm}}
+		{\bf Message} & {\bf Sender's intention} & {\bf Receiver's percep.} \\
+		\hline
+		\noalign{\vskip 2mm} 
+		\parbox{10 cm}{If I were lying to you, I'd smile and
+                  say ``that sounds great.''  I'm honest with you
+                  because I sincerely thought of us as partners.}
+                & Lie & Truth \\
+		\noalign{\vskip 2mm} 
+		\rowcolor{gray!25}
+		\parbox{10 cm}{You agreed to warn me of unexpected
+                  moves, then didn't \dots You've revealed things to
+                  England without my permission, and then made up a
+                  story about it after the fact!}  & Truth & Truth \\
+		\noalign{\vskip 2mm}
+		\parbox{10 cm}{\dots I have a reputation in this hobby
+                  for being sincere.  Not being duplicitous.  It has
+                  always served me well. \dots If you don't want to
+                  work with me, then I can understand that \dots} &
+                Lie & Truth \\
+		\noalign{\vskip 2mm} 
+		\rowcolor{gray!25}
+		\multicolumn{3}{c}{\textit{(Germany attacks Italy)}} \\ 
+		\noalign{\vskip 2mm} 
+		\parbox{10 cm}{Well this game just got less fun} & Truth& Truth \\
+		\noalign{\vskip 2mm} 
+		\rowcolor{gray!25}
+		\parbox{10 cm}{For you, maybe} & Truth & Truth \\
+	\end{tabular*}
+	\caption{An annotated conversation between \player{Italy} (white) and \player{Germany} (gray) at a moment when their relationship breaks down.  Each message is annotated by the sender (and
+          receiver) with its intended or perceived truthfulness; \player{Italy} is lying about \dots lying.}
+	\label{tab:dialogexample}
+\end{table}
+
+After providing background on the game of Diplomacy and our intended deception annotations (Section~\ref{sec:diplo}),
+%
+we discuss our study (Section~\ref{sec:study}).
+%
+To probe the value of the resulting dataset, we develop lie prediction
+models (Section~\ref{sec:models}) and analyze their results
+(Section~\ref{sec:analysis}).
+% Finally, we discuss this dataset within the deception literature
+%(Section~\ref{sec:lit}) and discuss the relevance of studying
+%deception in the context of long-lasting relationships
+%(Section~\ref{sec:contribution}).
+
+

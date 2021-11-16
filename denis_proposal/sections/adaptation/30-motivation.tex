@@ -1,0 +1,43 @@
+\section{Was ist \textit{ George Washington}?}
+\label{sec:motivation}
+
+This section defines cultural adaptation and motivates it application for tasks
+like creating culturally-centered training data for \abr{qa}.
+%
+\citet{vinay1995comparative} define adaptation as translation in which the relationship, and not the literal meaning, between the receiver and the content is recreated.
+
+Work on analogy is close to our interest, but the standard analogy set-up lacks the cross-cultural and cross-lingual dimensions~\citep{turney2008uniform, gladkova-etal-2016-analogy}.
+%
+Additionally, recent methods for identifying entities or cross-lingual
+translation could be repurposed for adaptation~\citep{duh2011machine,
+	schnabel2015evaluation, kasai-etal-2019-low,
+	arora-etal-2019-semi, kim-etal-2019-effective,
+	hangya-fraser-2019-unsupervised}
+
+Adaptation is most applicable when machine translation is combined
+with other tasks.
+%
+Non-literal translation would be harmful for certain tasks such as the information retrieval of news stories.
+%
+In contrast, question answering is one domain where adaptation seems crucial.
+%
+There has been an explosion of English-language \abr{qa} data,
+but not in other languages.  
+%
+Several approaches try to transfer English's bounty to other
+languages.
+%
+\abr{mlqa} and \abr{xq}u\abr{ad} generate questions through machine
+translation~\citep{lewis2019mlqa, 2019xquad}.
+%
+TyDi~\citep{tydiqa} gives users prompts from Wikipedia articles; other
+datasets like \squad{} recapitulate the problematic distribution of
+encyclopedias~\citep{reagle-11}.
+
+Most of the entities asked about in major \abr{qa}
+datasets---SQuAD, TriviaQA, Quizbowl---are American.
+%
+The coverage of the question remains the same across languages.
+
+\textbf{ Given that we already have professionally-written questions,
+	can we \textbf{adapt}, rather than literally generate, them to another culture and language?  }

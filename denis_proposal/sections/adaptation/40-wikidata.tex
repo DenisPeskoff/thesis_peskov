@@ -1,0 +1,188 @@
+\section{Adaptation from a Knowledge Base}
+\label{sec:wikidata}
+
+We first adapt entities using a knowledge base.
+%
+We use WikiData~\citep{vrandevcic2014wikidata}, a structured,
+human-annotated representation of Wikipedia that is actively
+developed.
+%
+This resource is well-suited to the task, particularly as features are
+standardized both within and across languages.
+
+Many knowledge bases explicitly encode the nationality of individuals,
+places, and creative works.\footnote{Like with language, nationality
+	is often correlated with culture, but is not synonymous.  Large
+	countries contain multitudes, while some nationalities (e.g., Kurds)
+	lack a \textit{de jure} nation but span many nations.  We elide this
+	detail and focus on information often available in knowledge bases.}
+%
+Entities are represented in knowledge bases as discrete sparse
+vectors, where most dimensions are unknown or not applicable (e.g., a building do not have a spouse).
+%
+For example, \entity{Angela Merkel} is a human (instance of), German
+(country of citizenship), politician (occupation), Rotarian (member
+of), Lutheran (religion), 1.65 meters tall (height), and has a PhD
+(academic degree).
+%
+How would we find the ``most similar'' American adaptation to
+\entity{Angela Merkel}?
+%
+Intuitively, we should find someone whose nationality is American.
+
+Some issues immediately present themselves; contemporary entities will
+have more non-zero entries than older entities.
+%
+Some characteristics are more important than others: matching unique
+attributes like ``worked as journalist'' is more important than
+matching ``is human''.
+%
+%Moreover, some attributes are discrete but others are continuous.
+
+The items can be grouped by \textit{property} and by \textit{value}, the WikiData equivalent of intents and slots. 
+%
+\textit{Properties} in WikiData are the abstract intents: \entity{Merkel} has an ``occupation'',  a ``academic degree''.  
+%
+\textit{Values} are the slots: her ``occupation'' is ``politician'', her ``academic degree'' is  a ``doctorate''.
+%
+The former works for macro-entity classification since a building, a person and a song have
+different properties.
+Additionally,  more popular items have more properties.
+%
+The latter are useful \textit{within} a culture as \entity{Merkel}
+will belong to a \textit{value} like the  \entity{Christian Democratic Union}, unlike an
+American politician.
+
+First, we bifurcate the WikiData into two sets: an American
+set~$\mathcal{A}$ for items which contain the \textit{value} ``United
+States of America'' and a German set~$\mathcal{D}$ for those with
+German values.\footnote{While the geopolitical definition of
+	American is straightforward, the German nation state is more
+	nuanced~\citep{schulze-91}.  Following \citet{green-03}, we adopt
+	members of the Zollverein or the German Confederation as ``German''
+	as well as their prececessor and sucessor states.}
+%
+This is a liberal approximation, but it successfully excludes roughly
+seven out of the eight million items in WikiData.
+%
+Then we explore the \textit{properties} and the \textit{values} from
+the WikiData.
+%
+\textit{Properties} are limited and centrally organized.
+%
+\textit{Values} are more numerous and varying in quality.  
+%
+We select the highest frequency features.\footnote{Including a maximum
+	and a minimum cap did not obviously generate better candidates than
+	the most frequent items}
+%
+Values exist in all types of dimensions and the structure of WikiData is occasionally inconsistent.
+%
+For example, you will not find Goethe under any expected variations of Germany; he is only annotated under Saxe-Weimar-Eisenach. 
+%
+Including additional values does not lead to qualitatively better predictions with 20,000 values than with 1,000 values.  
+%
+We use \textit{properties} for our final results. 
+%
+%, but \textit{values} could prove useful for intra-culture adaptation.
+
+The \textit{properties} are discrete and categorical;
+\entity{Merkel} either has an ``occupation'' or she does not.
+%
+Each entity then has a sparse vector.
+%
+We calculate the similarity of the vectors with Faiss's~\citep{JDH17} L2 distance.  
+%
+Specifically, we search for each of the source German adaptation entities in the pre-selected 1,000,000 item American matrix.
+%
+Conversely we search for each of the American entities in the pre-selected 180,000 item German matrix.
+%
+This division is crucial as the most similar candidates are from the same cultural background.  
+
+Formally we calculate the vector as:
+\begin{equation}d' = \underset{a \in \mathcal{A}}{\mathrm{arg\,min}}  \| a - d \| ^2 \end{equation}
+where $d'$ is the optimal German vector and $a \in \mathcal{A}$ are the items in the American matrix.
+
+For both WikiData and the embedding-based approach, we select 100 candidates per item. 
+
+So who is the American \entity{Angela Merkel}?
+%
+One possible answer is \entity{Woodrow Wilson}, a blue-eyed protestant who had a PhD, served as head of state, and
+was also nominated for a Nobel Peace Prize.  
+%
+This answer may be unsatisfying as it was \entity{Barack Obama} who sat across from \entity{Merkel} for nearly a decade.
+%
+To capture these more nuanced similarities, we turn to large text corpora in Section~\ref{sec:embedding}.
+
+
+While the classic \abr{nlp} vector
+example~\citep{mikolov2013linguistic} isn't as magical as initially
+claimed~\citep{rogers2017too}, it provides useful intuition.  We can use
+the intuitions of the clich\'e:
+%
+\begin{equation}
+\overrightarrow{\mbox{King}} - \overrightarrow{\mbox{Man}} + \overrightarrow{\mbox{Woman}} = \overrightarrow{\mbox{Queen}}
+\end{equation}
+to adapt between languages.  
+%
+% Just as we find WikiData vectors most similar apart from nationality, we solve:
+We follow the word analogy approach of 3CosAdd~\citep{levy2014linguistic, koper2016improving} to adapt the source word by solving:
+%
+\begin{equation}
+x - \overrightarrow{\mbox{American}} + \overrightarrow{\mbox{German}}
+= \overrightarrow{\mbox{Merkel}}
+\end{equation}
+to find the closest entity, \underline{Obama}, to $x$.
+
+%\jbgcomment{Given what's commented out, did you not do preprocessing to make entities single tokens?  If not, let's do that ASAP.}
+
+Towards this end, we will need to create relevant embeddings.
+%
+First, we use Wikipedia dumps in the English and German language,
+processed using Moses' preprocessing pipeline~\citep{koehn2007moses}.
+%
+However, by default, the dumps are separated as unigrams, whereas
+Named Entities such as people are often phrases.
+%
+We follow \citet{mikolov2013distributed} and use co-occurrence
+statistics to build bigrams and trigrams, limiting the vocabulary to
+the 1M most frequent tokens.
+%To address this limitation, we build bigrams and trigrams using cooccurence statistics, limiting the vocabulary to 
+%
+%
+%On this phrase-based, and not exclusively unigram-based, data we are able to train cross-lingual embeddings using VecMap, which a leading method for English-German translation.  
+We use word2vec~\citep{mikolov2013distributed}, rather than FastText~\citep{bojanowski2016enriching}, as we do not want orthography to influence the similarity of entities.
+%
+\entity{Merkel} in English and in German have quite different
+neighbors, and we intend to keep it that way.
+%
+
+%\jbgcomment{what does ``orthography to have an effect'' mean?  Orthography doesn't have agency.}
+
+However, the standard word2vec model assumes a single monolingual
+embedding space.
+%
+To align the two monolingual spaces we use unsupervised
+Vecmap~\citep{artetxe2018robust}, a leading tool for
+cross-lingual word embeddings.
+%
+\jbgcomment{The above and below paragraphs seem inconsistent.  Vecmac
+	is a rotation while below you're assuming a translation below.}
+%
+American$\rightarrow$German can be thought of as representing the source embedding in the American space and the target embedding in the German space.
+%
+Hence, the source (American) becomes \textit{x} in this equation, meaning that \textit{x-a+b} represents its adapted vector and the closest target words (German) based on cosine similarity its word adaptations.
+%
+\textit{a} and \textit{b} represent the American and German culture and are used as anchors for the adaptation. 
+%
+We average the vector of \entity{United States} in the English space and that of \entity{USA} in the German space for robustness. 
+%
+Similarly we average \entity{Germany} and \entity{Deutschland} for vector \textit{b}.
+%
+In standard analogy the \textit{a} and \textit{b} vectors are different for each test pair.  
+%
+In our case, the vectors are the same because the relation is identical for each \textit{x}-\textit{y} pair.  
+
+Summarizing, we take the German (or American) embedding of the Named Entity, adapt it with 3CosAdd and look for the most similar words to the adapted embeddings in the American (or German) model.
+%
+In the case where the phrase is not found as an embedding, we back off to the last name of the named entity (e.g., \entity{Barack Obama} $\rightarrow$ \entity{Obama}).

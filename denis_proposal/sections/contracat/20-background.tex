@@ -1,0 +1,77 @@
+\section{Meaningful Model Evaluation in Machine Translation}
+\label{sec:propeval}
+
+%Due to the intrinsic evaluation of many datasets, higher standards of evaluation would better understand the strength of machine learning models, and indirectly the data used to train them.
+%
+
+%
+
+
+Machine translation is a classic \nlp{} task with immediate real-world application.
+%
+Its a complex task that requires diverse linguistic knowledge and data in multiple languages.
+%
+Classic datasets were often gathered through extensive collaboration with experts.
+%
+However, recent ones are often created through crowd-sourcing or automatic methods. 
+%
+Therefore, this is an area well-suited to our evaluation techniques.  
+
+We focus on German-English coreference resolution as a representative task.  
+%
+The seemingly straightforward translation of the English pronoun \textit{it} into German requires knowledge at the syntactic, discourse and world knowledge levels for proper pronoun coreference resolution (\coref{}).
+%
+A German pronoun can have three genders, determined by its antecedent: masculine (\emph{er}), feminine (\emph{sie}) and neuter (\emph{es}).
+%
+The nuance of this work requires native knowledge of both English and German.  
+
+Accuracy in machine translation is at an all-time high with the rise of neural architectures~\citep{wu2016googles}; but does accuracy alone suffice?  
+%
+Previous work~\citep{hardmeier2010modelling,miculicich-werlen-popescu-belis-2017-validation,mueller2018} proposed evaluation methods for specifically pronoun translation. 
+%
+This has been of special interest in context-aware neural machine translation (\nmt{}) models that are capable of using discourse-level information.
+%
+Despite promising results, the question remains: 
+Are transformers \citep{vaswani2017attention} truly \textit{learning} this task, or are they exploiting simple heuristics to make a coreference prediction?
+% 
+To empirically answer this question, we propose extending ContraPro~\citep{mueller2018}---a contrastive challenge set for automatic English$\rightarrow$German pronoun translation evaluation\footnote{ContraPro is described in detail in Section~\ref{sec:contrapro}}---by making small adversarial changes in the contextual sentences.\footnote{Equal effort between Denis Peskov, Benno Krojer, Dario Stojanovski, and supervised by Alex Fraser. 2020. In International Conference on Computational Linguistics \\ Peskov is responsible for part of template design, selecting concrete nouns for the templates, paper writing, and the video.}
+
+Our adversarial attacks on ContraPro show context-aware Transformer \nmt{} models can easily be misled by simple and unimportant changes to the input.
+%
+However, interpreting the results obtained from adversarial attacks can be difficult. 
+%
+In our case, trivial changes in language cause incorrect predictions, but both the changes and the prediction would not be noticed by somebody without a mastery of German.  
+%
+Positive results will show that \nmt{} uses brittle heuristics to solve \coref{}, since trivial changes in pronouns and nouns should not fool a coreference corpus like ContraPro.
+%
+However, modifying ContraPro alone will not test specific phenomena and will only demonstrate a broad dependence on heuristics.  
+
+For this reason, we propose a new dataset, created from templates (Section~\ref{sec:template}), to systematically evaluate which heuristics are being used in coreferential pronoun translation.  
+%
+Inspired by previous work on \coref{}~\citep{raghunathan2010multi,lee2011stanford}, we will create templates tailored to evaluating the specific steps of an idealized \coref{} pipeline. 
+%
+We will call this collection \contracat{}, \textbf{C}ontrastive \textbf{C}oreference \textbf{A}nalytical \textbf{T}emplates. 
+%
+The construction of templates is controlled, enabling us to easily create large number of coherent test examples and provide unambiguous conclusions about the \coref{} capabilities of \nmt{}. 
+%
+While this methodology depends on automation, a technique called into question in Chapter \ref{ch:unspecialized}, the templates are written in collaborations between a native German speaker and native English speakers. 
+%
+Since automation is subject to quality control issues, this level of expertise is necessary if the adversarial dataset is to be reflective of actual language used by English and German speakers.
+%
+The procedure used in creating these templates can be adapted to many language pairs with little effort.
+%
+We also propose a simple data augmentation approach using fine-tuning. 
+%
+This methodology should not change the way \coref{} is being handled by \nmt{} and support the hypothesis that automated data techniques have limited applicability.  
+%
+We will publicly release a new dataset, ContraCAT, and the adversarial modifications to ContraPro.
+
+ContraCAT applies only to coreference, but the investigation of heuristics is an important research direction in \nlp{}, that can quantify the issues noted with automatic and crowd-sourced datasets (Chapter~\ref{ch:unspecialized}), even if experts are unavailable ()Chapter~\ref{ch:hybrid}).
+%
+Heuristics perform well if there are underlying data limitations; this implies that the training data and the evaluation data resemble one another in superficial ones.
+%
+Therefore, exposing the brittleness in current datasets motivates the need for higher-quality evaluation data---to observe this limitation---and varied training data---to overcome it.  
+
+We introduce coreference resolution as a task in Section~\ref{sec:mtbg}, the idealized coreference pipeline in Section~\ref{sec:mtbg}, and the transformer model in Section~\ref{sec:contracatmodel}.  
+We discuss ContraPro in Section~\ref{sec:contrapro}, and explain our proposed templates in Section~\ref{sec:templates}.
+

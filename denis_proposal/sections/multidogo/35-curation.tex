@@ -1,0 +1,27 @@
+\subsection{Domain Selection}
+Our primary criteria for domain selection are two-fold: covering a broad sweep of industries that use goal-oriented dialogues and selecting domains where conversational interfaces are already in use or likely to be implemented in the future.  This set of criteria is especially well matched with domains that frequently involve customer support.  Furthermore, there is a shortage of publicly available  data in the domains we provide, such as Fast Food and Finance.  To fulfill both of these needs, we include multiple domains in the \multidogo dataset. Ultimately, we  curate conversations for six domains: Airline, Fast Food, Finance, Insurance, Media, and Software Support.  When considered independently, the corpus of dialogues for each of these domains is the largest collection of human-elicited dialogues available for financial advice and help, media support, enterprise software support (non-technical level support, unlike the Ubuntu forum dataset \citep{lowe2015ubuntu}), fast food, and insurance.
+%\subsection{Multiple Domains}
+
+\paragraph{Domains in our Data:\footnote{Detailed data collection and annotation schemata for each domain can be found in the appendix.}}
+
+\textbf{Airline} domain dialogues focus on booking airline flights, selecting or changing seat assignments, and requesting boarding passes; \textbf{Fast Food} domain is the least similar to the others, as the intents primarily involve ordering food and the slots quantify their order.  
+%
+For example, the OrderBurgerIntent contains slots for size, quantity, and ingredients; \textbf{Finance} domain simulates dialogues a customer may have with a bank.  
+%
+These include opening a bank account, checking their balance, and reporting a lost credit card; \textbf{Insurance} domain simulates users calling about their insurance policy or requesting the fulfillment of a policy on their car or phone; \textbf{Media} domain simulates dialogues a customer may have ordering a service or paying bills related to telecommunications. 
+%
+This is our largest domain; \textbf{Software} domain involves customers inquiring about software services: products, outages, promotions, and bills.  The majority of intents are domain specific.  
+
+\subsection{Domain Schemata and Guidelines}
+Prior to dialogue collection, we develop schemata for each domain.
+These schemata are the set of slot labels, slot value types, and intents that pertain to the domain.  
+%
+To determine which slots, values, intents, and dialog acts to include, we rely on real word reference points. 
+%
+For instance, we populate slots for the Fast Food domain by identifying menu items, such as sodas, that are shared among popular fast food menus. Using this schema, we then write two sets of instructions. One set of instructions is for the ``agents'' and the other is for the ``customers''.  
+%
+The agents' instructions are meticulously detailed as we expect them to ``structure" the conversation and appropriately respond to out of domain requests.  Since our agents are trained for their role, we have high confidence in their ability to follow complex guidelines. In contrast, taking into consideration that the customer role is to be carried out by crowd-sourced workers, i.e. lay people, we create simplified instructions that are less detailed and shorter in length.  
+%
+For each task, we provide an annotated conversation, explain each answer option, and (most importantly) provide examples.
+%
+Before scaling up our data collection, we run a pilot for each task and identify commonly missed questions. We use this pilot process to revise the instructions and add relevant examples iteratively.

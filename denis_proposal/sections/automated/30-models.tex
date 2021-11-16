@@ -1,0 +1,188 @@
+\section{Mitigating noise}
+\label{sec:models}
+
+This section discusses two approaches to mitigating the effects of
+missing and corrupted information caused by \textsc{asr} systems.  The
+first approach---forced decoding---exploits systematic errors to arrive at the correct answer.
+The second uses confidence information from the \asr{} system to
+down-weight the influence of low-confidence terms.  Both approaches improve accuracy over a baseline \dan{} model and show promise for short single-sentence questions.   However, a \textsc{ir} approach is more effective on long questions since noisy words are completely avoided during the answer selection process.  
+
+
+\subsection{\textsc{ir} baseline}
+The \textsc{ir} baseline reframes Jeopardy! and \qb~\textsc{qa} tasks as document retrieval tasks with an inverted search index.  
+%
+We create one document per distinct answer; each document has a text field formed by concatenating all questions with that answer together.  
+%
+At test time new, unseen questions are treated as queries, and documents are scored using \textsc{bm25}~\citep{ramos2003using,robertson2009probabilistic}.
+%
+We implement this baseline with Elastic Search and Apache Lucene.
+
+\subsection{Forced decoding}
+\label{sec:forced-decoding}
+
+We have systematically lost information due to \asr{} decoding.  
+%
+We could predict the answer if we had access to certain words in the original question and further postulate that wrong guesses are better than knowing that a word is unknown.
+
+As a first step, we explored commercial solutions---Bing, Google,
+\textsc{ibm}, Wit---with low transcription errors.  
+%
+However, their \textsc{api}s ensure that an end-user often cannot extract anything more than one-best transcriptions, along with an aggregate confidence for the sentence.  
+%
+Additionally, the proprietary systems are moving targets, harming reproducibility.
+
+Therefore, we use Kaldi~\citep{Povey11thekaldi} for all experiments.  Kaldi is a commonly-used, open-source tool for
+ \textsc{asr}; its maximal transparency enables approaches that incorporate uncertainty into
+downstream models.  Kaldi provides not only top-1
+predictions, but also confidences of words, entire lattices, and phones
+(Table~\ref{tab:data}).  
+%
+Each item in the sequence represents a word and has a confidence in range [0, 1] correspond to the respective.
+
+\begin{table}[t!]
+	\small
+	\begin{tabularx}{\textwidth}{lXXr}
+		\\[-1em]
+				Clean  & For 10 points, name this revenge novel centering on Edmond Dantes, written by Alexandre Dumas  \\ 
+		\rowcolor{gray!25}
+		\\[-1em]
+			\rowcolor{gray!25}
+		1-Best& for$^{0.935}$ ten$^{0.935}$ points$^{0.871}$ same$^{0.617}$ this$^{1}$ \ldots revenge novel centering on \unk{} written by alexander \unk{} \dots \\
+		\rowcolor{white}
+		\\[-1em]
+		``Lattice''& for$^{0.935}$ [eps]$^{0.064}$ pretend$^{0.001}$ ten$^{0.935}$  \dots \mbox{pretend}   point points  point   name same named name names this revenge novel \ldots \\
+		\rowcolor{gray!25}
+		\\[-1em]
+			\rowcolor{gray!25}
+		Phones  & f\_B$^{0.935}$ er\_E$^{0.935}$  t\_B$^{0.935}$  eh\_I$^{1}$  n\_E$^{0.935}$ \ldots p\_B   oy\_I n\_I t\_I s\_E sil s\_B ey\_I m\_E dh\_B ih\_I s\_E r\_B iy\_I v\_I eh\_I n\_I jh\_E n\_B aa\_I v\_I ah\_I l\_I \ldots \\
+		
+	\end{tabularx}
+	\caption{As original data are translated through \abr{asr}, it
+	degrades in quality.  One-best output captures per-word
+	confidence.  Full lattices provide additional words and phone data captures the raw \abr{asr} sounds.  Our confidence model and forced decoding approach could be used for such data in future work.}
+	\label{tab:data}
+
+\end{table}
+
+	
+The typical end-use of an \asr{} system wants to know when when a word is not recognized.  
+By default, a graph will have a token that represents an unknown; in Kaldi, this becomes \unk{}.
+At a human-level, one would want to know that an out of context word happened.
+
+However, when the end-user is a downstream model,
+a systematically wrong prediction may be better than a generic
+statement of uncertainty.  
+%
+So by removing all reference to \unk{} in
+the model, we force the system to decode ``Louis Vampas'' as ``Louisiana'' rather than \unk{}.\footnote{More specifically, \unk{} is removed from the Finite State Transducer, which sets the input/output for the \asr{} system.}
+%
+The risk we run with this method is introducing words not present in the original
+data.  For example, ``count'' and ``mount'' are similar in sound but
+not in context embeddings.  Hence, we need a method to downweight
+incorrect decoding.
+
+
+
+
+\subsection{Confidence augmented \dan{}}
+\label{sec:conf-dan}
+
+
+%We build on Deep Averaging Networks~\citep[\dan{}]{Iyyer:Manjunatha:Boyd-Graber:Daume-III-2015}, assuming
+%that deep bag-of-words models can improve predictions and be robust to
+%corrupted phrases. 
+
+The errors introduced by \textsc{asr} can hinder
+sequence neural models as key phrases are potentially corrupted. %COMMENT not relevant to better data so removing entirely: and syntactic information is lost.
+%
+We modify the original \dan{} model, introduced in Background Section~\ref{sec:dan}, to use word-level confidences from the \textsc{asr} system as a feature and be robust to corrupted phrases.  
+%
+In increasing order of complexity, the variations are: a Confidence
+Informed Softmax \textsc{dan}, a Confidence Weighted Average
+\textsc{dan}, and a Word-Level Confidence \textsc{dan}.
+We represent the confidences as a vector~$\textbf{c}$, where each cell
+~$c\textsubscript{i}$ contains the \textsc{asr} confidence of word
+$w\textsubscript{i}$.
+
+
+\begin{comment}
+The original Deep Averaging Network, or \textsc{dan}, classifier has
+three sections: a "neural-bag-of-words" (\textsc{nbow}) encoder, which
+composes all the words in the document into a single vector by
+averaging the word vectors; a series of hidden transformations, which
+give the network depth and allow it to amplify small distinctions
+between composed documents; and a softmax predictor that outputs a class.
+
+The encoded representation~$\textbf{r}$ is the averaged embeddings of
+input words. The word vectors exist in an embedding
+matrix~$\textbf{E}$, from which we can look up a specific word~$w$
+with $\textbf{E}[w]$. The length of the document is~$N$. To compute
+the composed representation~$r$, the \textsc{dan} averages all of the
+word embeddings:
+\begin{equation}
+\textbf{r} = \frac{\sum_{i}^{N}\textbf{E}[w\textsubscript{i}]}{N}
+\end{equation}
+
+The network weights~$\textbf{W}$, consist of a weight-bias pair for each layer of
+transformations~$(\textbf{W\textsuperscript{(h\textsubscript{i})}, b\textsuperscript{(h\textsubscript{i})}})$ for each layer $i$ in the list of
+layers~$L$. To compute the hidden representations for each layer, the
+\textsc{dan}  linearly transforms the input and then applies a nonlinearity:
+$
+\textbf{h\textsubscript{0}} = \sigma (\textbf{W\textsuperscript{(h\textsubscript{0})}}\textbf{r}+\textbf{b\textsuperscript{(h\textsubscript{0})}})
+$.
+Successive hidden representations~$h\textsubscript{i}$ are:
+$
+\textbf{h\textsubscript{i}} = \sigma (\textbf{W\textsuperscript{(h\textsubscript{i})}}\textbf{h\textsubscript{i-1}}+\textbf{b\textsuperscript{(h\textsubscript{i})}})
+$.
+The final layer in the \textsc{dan} is a softmax output:
+$
+\textbf{o} = \mathrm{softmax}(\textbf{W\textsuperscript{(o)}}\textbf{h\textsubscript{L}} + \textbf{b\textsuperscript{(o)}})
+$.
+moved to BACKGROUND
+\end{comment}
+
+
+
+The simplest model averages the confidence across the whole sentence
+and adds it as a feature to the final output classifier.  For example
+in Table~\ref{tab:data}, ``for ten points'' averages to $0.914$. We introduce an additional weight in the output~$\textbf{W\textsuperscript{c}}$, which adjusts our prediction based on the average confidence of each word in the question.
+
+
+However, most words have high confidence, and thus the average confidence of a sentence or question level is high.  
+%
+To focus on \emph{which} words
+are uncertain we weight the word embeddings by their confidence attenuating uncertain words before calculating the \textsc{dan} average.
+%
+In the previous example---``for ten points''---``for'' and ``ten'' are frequently occuring words and have a confidence of .935, while ``points'' has a lower confidence of .871. 
+%
+ The next word---``same''---should actually be ``name'' and hence the embedding referenced is incorrect.
+ %
+But, the lower confidence of .617 for this prediction decreases the overall weight of the embedding in the model.  
+
+
+
+
+
+Weighting by the confidence directly removes uncertain words, but this
+is too blunt an instrument, and could end up erasing useful information contained in low-confidence words, so we instead learn a function based
+on the raw confidence from our \abr{asr} system.  Thus, we recalibrate
+the confidence through a learned function~$f$:
+
+\begin{equation}
+f(\textbf{c}) = \textbf{W\textsuperscript{(c)}c} + \textbf{b\textsuperscript{(c)} }
+\end{equation}
+and then use that scalar in the weighted mean of the \abr{dan}
+representation layer:
+
+\begin{equation}
+\textbf{r\textsuperscript{**}} = \frac{\sum_{i}^{N} \textbf{E}[w\textsubscript{i}] * f(c\textsubscript{i})}{N}.
+\end{equation}
+
+In this model, we replace the original encoder~$\textbf{r}$ with the
+new version $\textbf{r\textsuperscript{**}}$ to learn a transformation
+of the \textsc{asr} confidence that down-weights uncertain words and
+up-weights certain words.  This final model is referred to as our ``Confidence Model''.
+
+Architectural decisions are determined by hyperparameter sweeps.  They include: having a single hidden layer of 1000 dimensionality for the \dan, multiple drop-out, batch-norm layers, and a scheduled \textsc{adam} optimizer. Our \dan{} models train until convergence, as determined by early-stopping.  Code is
+implemented in PyTorch~\citep{paszke2017automatic}, with TorchText for
+batching.\footnote{Code, data, and additional analysis available at \url{https://github.com/DenisPeskov/QBASR}}

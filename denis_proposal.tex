@@ -1,0 +1,153 @@
+% August 2017 (TOC contents linked in blue in pdf file)
+%This template was prepared by Dorothea F. Brosius of the
+%Institute for Electronics and Applied Physics, University of Maryland, College Park, MD
+%The template was last updated in August 2017
+%Thesis Main Page used with thesis.sty based on the
+%University of Maryland Electronic Thesis and Dissertation (ETD) Style Guide (2016)
+
+%The YourInformation file was created by Freja Nordsiek, 2014.
+%Code for linking the TOC titles to the texyt in the pdf file was created by Freja Nordsiek, 2014.
+
+% Select the version that fits how you are making this LaTeX document (its driver).
+% The first two are the most likely ones to be needed.
+
+\newcommand{\mydriver}{pdflatex} %Making a PDF directly using pdflatex.
+
+\documentclass[12pt,\mydriver]{style/umd-thesis/thesis}  %12pt is larger than 11pt
+
+\usepackage[normalem]{ulem}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{epstopdf}
+\usepackage{wrapfig}
+\usepackage{nicefrac}
+\usepackage{amsfonts}
+\usepackage{url}
+%\usepackage{subeqn}
+\usepackage{dsfont}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{bibentry}
+\usepackage{xspace}
+\usepackage{bm,bbm}
+\usepackage{algorithm,algorithmicx,algpseudocode}
+\usepackage{amsmath,amssymb}
+\usepackage{latexsym}
+\usepackage{hhline}
+\usepackage{mdwlist}
+\usepackage{url}
+\usepackage{color,xcolor,colortbl}
+\usepackage{tikzsymbols}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{csquotes}
+\usepackage{amsfonts}
+%\usepackage{marvosym}
+\usepackage{tabularx}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\usepackage{soul}
+\usepackage{epigraph}
+\usepackage{enumitem}
+\usepackage{mdwlist}
+
+\setlength\epigraphwidth{.8\textwidth}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\usetikzlibrary{tikzmark}
+\usepackage{colortbl}
+
+\usepackage{style/umd-thesis/titlesec}
+   \titleformat{\chapter}
+      {\normalfont\large}{Chapter \thechapter:}{1em}{}
+\usepackage{style/umd-thesis/cite}
+\usepackage{style/umd-thesis/lscape}
+\usepackage{style/umd-thesis/indentfirst}
+\usepackage{style/umd-thesis/latexsym}
+\usepackage{style/umd-thesis/multirow}
+%\usepackage{style/umd-thesis/tabls}
+\usepackage{style/umd-thesis/longtable}
+\usepackage{style/umd-thesis/supertabular}
+\usepackage{style/umd-thesis/slashbox}
+\usepackage[colorlinks=true,urlcolor=black,linkcolor=blue,citecolor=blue]{hyperref}
+\usepackage{natbib}
+\usepackage{bibentry}
+
+\makeatletter
+\patchcmd{\SOUL@ulunderline}{\dimen@}{\SOUL@dimen}{}{}
+\patchcmd{\SOUL@ulunderline}{\dimen@}{\SOUL@dimen}{}{}
+\patchcmd{\SOUL@ulunderline}{\dimen@}{\SOUL@dimen}{}{}
+\newdimen\SOUL@dimen
+\makeatother
+
+
+\newif\ifcomment
+\commentfalse
+
+\include{denis_proposal/preamble}
+
+\graphicspath{{denis_proposal/figures/}{denis_proposal/commit_auto_fig/}{denis_proposal/auto_fig/}}
+
+
+\begin{document}
+\nobibliography*
+\pagestyle{empty}
+\include{denis_proposal/sections/00-abstract} %(must be first, required, non-numbered)
+\include{denis_proposal/sections/01-titlepage} %(must follow Abstract, required, non-numbered)
+\include{denis_proposal/sections/02-copyright} %(highly recommended, non-numbered)
+
+%Pages from this point start at lower- Roman number ii)
+\pagestyle{plain} \pagenumbering{roman} \setcounter{page}{2}
+%\addcontentsline{toc}{chapter}{Preface}
+%\include{weiwei_proposal/sections/Preface}  %(if present, start at lower-case Roman number ii)
+%\addcontentsline{toc}{chapter}{Foreword}
+%\include{weiwei_proposal/sections/Foreword} %(if present, lower-case Roman)
+%\addcontentsline{toc}{chapter}{Dedication}
+%\include{weiwei_proposal/sections/Dedication} %(if present, lower-case Roman)
+%\addcontentsline{toc}{chapter}{Acknowledgements}
+%\include{weiwei_proposal/sections/Acknowledgements} %(if present, lower-case Roman)
+
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\tableofcontents %(required, lower-case Roman)
+\newpage
+\listoftables %(if present, lower-case Roman)
+\newpage
+\listoffigures %(if present, lower-case Roman)
+\newpage
+% LIST OF ABBREVIATIONS
+%\addcontentsline{toc}{chapter}{List of Abbreviations}
+%\include{weiwei_proposal/sections/Abbreviations-supertabular}
+
+\newpage
+\setlength{\parskip}{0em}
+\renewcommand{\baselinestretch}{1} % Line stretch, 1 for proposal, 2 for thesis
+\small\normalsize
+
+%Pages from this point start at Arabic numeral 1
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\include{denis_proposal/sections/10-introduction}
+\include{denis_proposal/sections/20-background}
+\include{denis_proposal/sections/30-unspecialized}
+\include{denis_proposal/sections/40-semispecialized}
+\include{denis_proposal/sections/51-specializeddesign}
+\include{denis_proposal/sections/50-specialized}
+\include{denis_proposal/sections/60-proposed}
+\include{denis_proposal/sections/70-conclusion}
+\include{denis_proposal/sections/80-reading}
+\titleformat{\chapter}
+{\normalfont\large}{Appendix \thechapter:}{1em}{}
+\appendix
+\renewcommand{\chaptername}{Appendix}
+\include{denis_proposal/sections/appendix}
+
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+
+\newpage
+\bibliographystyle{style/acl_natbib}
+\bibliography{bib/journal-full,bib/denis, bib/jbg, bib/fs}
+
+\end{document}

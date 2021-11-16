@@ -1,0 +1,286 @@
+\section{Diplomacy}
+\label{sec:diplo}
+
+
+The Diplomacy board game places a player in the role of one of seven
+European powers on the eve of World War I.
+%
+The goal is to conquer a simplified map of Europe by ordering armies
+in the field against rivals.
+%
+Victory points determine the success of a player and allow them to build
+additional armies; the player who can gain and maintain the highest
+number of points wins.\footnote{In the parlance of Diplomacy games,
+  points are ``supply centers'' in specific territories (e.g.,
+  London).  Having more supply centers allows a player to build more
+  armies and win the game by capturing more than half of the 34 supply
+  centers on the board.}
+%
+The mechanics of the game are simple and deterministic: armies,
+represented as figures on a given territory, can only move to adjacent
+spots and the side with the most armies always wins in a disputed
+move.
+%
+The game movements become publicly available to all players after the
+end of a turn. \dpcomment{Chris M suggested adding sentence
+  contrasting this with other information games}
+%
+
+Because the game is deterministic and 
+everyone begins with an equal amount of armies, a player cannot win
+the game without forming alliances with other players---hence the name
+of the game: Diplomacy. \dpcomment{Chris M suggestion to inverse:
+  Everyone begins with the same amount of armies, and because conflict
+  is decided by superior force, a player cannot win the game without
+  forming alliances}
+%
+Conquering neighboring territories depends on support from another
+player's armies.
+%
+After an alliance has outlived its usefulness, a player often
+dramatically breaks it to take advantage of their erstwhile ally's
+vulnerability.
+%
+Table~\ref{tab:dialogexample} shows the end of one such relationship.
+%
+As in real life, to succeed a betrayal must be a surprise to the
+victim.
+%
+Thus, players pride themselves on being able to lie \emph{and} detect lies.
+%
+Our study uses their skill and passion to build a dataset of deception
+created by battle-hardened diplomats.
+%
+Senders annotate whether each message they write is an \alie{} and
+recipients annotate whether each message received is a \slie{}.
+%
+Further details on the annotation process are in
+Section~\ref{sec:interface}.
+%
+%The annotation reveals the sender's internal state, at the time the message is sent.  
+
+
+\subsection{A game walk-through} 
+\label{sec:walkthrough}
+
+Figure~\ref{fig:full_game} shows the raw counts of one game
+in our dataset.
+%
+But numbers do not tell the whole story.
+%
+We analyze this case study using rhetorical
+tactics~\citep{cialdini2004social}, which \citet{oliveira2017dissecting}
+use to dissect spear phishing e-mails and \citet{anand-11} apply to
+persuasive blogs.
+%
+Mentions of tactics are in italic (e.g., \textit{authority}.
+%; context for quotes in Appendix, Table~\ref{tab:persuasion}. 
+%
+For the rest of the paper, we will refer to players via the name of
+their assigned \player{country}.
+%
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=.75\linewidth, height = 13cm]{\autofig{game_lies.pdf}}
+	\caption{Counts from one game featuring an \player{Italy}
+          (green) adept at lying but who does not fall for others'
+          lies.  The player's successful lies allow them to gain an
+          advantage in points over the duration of the game.  In 1906,
+          \player{Italy} lies to \player{England} before breaking
+          their relationship.  In 1907, \player{Italy} lies to
+          everybody else about wanting to agree to a draw, leading to
+          the large spike in successful lies.}
+	\label{fig:full_game}
+\end{figure}
+
+Through two lie-intense strategies---convincing \player{England} to betray
+\player{Germany} and convincing all remaining countries to agree to a
+draw---\player{Italy} gains control of the board.
+%
+\player{Italy}'s first deception is a plan with \player{Austria} to
+dismantle \player{Turkey}.
+%
+\player{Turkey} believes \player{Italy}'s initial assurance of
+non-aggression in 1901.
+%
+\player{Italy} begins by excusing his initial silence due to a rough day at
+work, evoking empathy and \textit{likability}.
+%
+While they do not fall for subsequent lies, \player{Turkey}'s initial
+gullibility cements Italy's first-strike advantage.
+%
+Meanwhile, \player{Italy} proposes a long-term alliance with \player{England}  against
+\player{France}, packaging several small truths with a big lie.
+%
+The strategy succeeds, eliminating \player{Italy}'s greatest threat.
+
+Local threats eliminated, \player{Italy} turns to rivals on the other
+end of the map.
+%
+\player{Italy} persuades \player{England} to double-cross its
+long-time ally \player{Germany} in a moment of \textit{scarcity}: if
+you do not act now, there will be nowhere to expand.
+%\jbgcomment{This didn't explain how this was scarcity, I added my best guess.}
+%
+\player{England} accepts help from ascendant Italy, expecting
+\textit{reciprocity}.
+%
+However, \player{Italy} aggressively and successfully moves against
+\player{England}.
+%
+The last year features a meta-game deception.
+%
+After \player{Italy} becomes too powerful to contain, the remaining four
+players team up.
+%
+Ingeniously, \player{Italy} feigns acquiescence to a five-way draw,
+individually lying to each player and establishing \textit{authority}
+while brokering the deal.
+%
+Despite \player{Italy's} record of deception, the other players believe the
+proposal (annotating received messages from \player{Italy} as truthful) and
+expect a 1907 endgame, the year with the most lies.
+%
+\player{Italy}  goes on the offensive and knocks out \player{Austria}.
+%
+%\player{Italy}'s summary of the game in their own words is in the Appendix, Table~\ref{tab:userfeedback}.
+%\jbgcomment{Give more explicit forward reference so that readers don't have to hunt.}
+
+%\jbgcomment{Again, focus on who's lying}
+
+%Cialdini seems to best citep and it's used by cybseceurity \jbgcomment{Link the examples to the literature.  Presumably these things have names, find out what those names are, and then citep a relevant paper.  Talk about how that's relevant for things like Phishing and social engineering.}
+
+Each game has relationships that are forged and then riven.
+%
+In another game, an honest attempt by a strong \player{Austria} to woo an
+ascendant \player{Germany} backfires, knocking \player{Austria} from the game.
+%
+\player{Germany} builds trust with \player{Austria} through a believed
+fictional experience as a Boy Scout in Maine (\textit{likability}).
+%
+In a third game, two consecutive unfulfilled promises by an ambitious
+\player{Russia} leads to a quick demise, as their subsequent excuses
+and apologies are perceived as lies (failed \textit{consistency}).
+%
+In another game, \player{England}, \player{France}, and
+\player{Russia} simultaneously attack \player{Germany} after offering
+duplicitous assurances.
+%
+Game outcomes vary despite the identical, balanced starting board, as
+different players use unique strategies to persuade, and occasionally
+deceive, their opponents.
+  
+\subsection{Defining a lie}
+
+%added citeps and additional definitions \jbgcomment{This needs to be fleshed out; need more citations.  E.g., citep things that look at fake profiles, reviews, etc. citep some of the alternate definitions of lies, talk about why we
+  %don't use them.  }
+
+Statements can be incorrect for a host of reasons: ignorance,
+misunderstanding, omission, exaggeration.
+%
+\citep{gokhman2012search} highlight the difficulty of finding willful,
+honest, and skilled deception outside of short-term, artificial
+contexts~\citep{depaulo2003cues}.
+%
+Crowdsourced and automatic datasets rely on simple
+negations~\citep{perez2017automatic} or completely implausible claims
+(e.g., ``Tipper Gore was created in 1048'' from \citep{fever-18}).
+%
+While lawyers in depositions and users of dating sites will not
+willingly admit to their lies, the players of online games are more
+willing to revel in their deception.
+
+We must first define what we mean by deception.
+%
+Lying is a mischaracterization; it's thus no surprise that a
+definition may be divisive or the subject of academic
+debate~\citep{gettier-63}.
+%
+We provide this definition to our users: ``Typically, when [someone]
+lies [they] say what [they] know to be false in an attempt to deceive
+the listener''~\citep{siegler1966lying}.
+%
+An orthodox definition requires the speaker to utter an explicit
+falsehood~\citep{sep-lying-definition}; skilled liars can deceive with
+a patina of veracity.
+%
+A similar definition is required for prosecution of perjury, leading
+to a paucity of convictions~\citep{bogner-74}.
+%
+Indeed, when we ask participants what a lie looks like, they mention
+evasiveness, shorter messages, over-qualification, and creating false
+hypothetical scenarios~\citep{depaulo2003cues}.
+
+\subsection{Annotating truthfulness}
+
+\begin{figure}[t]
+	\footnotesize
+	\centering
+	\includegraphics[width = \linewidth]{\figfile{Interface_v3.pdf}}
+	\caption{Every time they send a message, players say whether
+          the message is truthful or intended to deceive.  The receiver then
+          labels whether incoming messages are a lie or not.  Here
+          \player{Italy} indicates they believe a message from
+          \player{England} is truthful but that their reply is not. }
+        %\jbgcomment{Too small.  If this is to be included, make font bigger or zoom in to important regions.}
+	\label{fig:interface}
+\end{figure}
+
+
+%\begin{figure*}[t]
+%	\centering
+%	\includegraphics[width=\linewidth]{\figfile{convo_example_v1.png}}
+%	\caption{An example conversation from our messaging interface.  Users write messages and annotate them with thumbs up or thumbs down.  Germany has accused Italy of being an untrustworthy ally.}
+%\end{figure*}
+
+
+% don't think CHI comment relevant anymore \jbgcomment{\dpcomment{need help.  it's technically reliable, it looks like the game, and it's visually friendly.  How do I write this and how do I citep this a la CHI?}You can't just say ``easiest to use''.  Talk about what
+	%made them easy to use with the language of CHI (affordances, idioms,
+	%transfer effects, etc.).}
+
+%The board and move placement is provided as Figure~\ref{fig:board}  
+%Discord has been used for educational research in the past~\citep{lacher2018using}.
+
+%done\jbgcomment{Distinction with prior work needs to be clearer.  That was	post-hoc; this is in the loop.  That focused on betrayal inferred from Talk about how that might affect people's patterns of lying, etc.  (Also, add citeps.)}
+
+%\dpcomment{should all of below be a paragraph in the lit review instead}
+%\jbgcomment{It doesn't have to be relegated to related work, but should be here like this.  Introduce this as you use the features.}
+
+Previous work on the language of Diplomacy~\citep{niculaelinguistic}
+lacks access to players' internal state and was limited to
+\textit{post-hoc} analysis.
+%
+We improve on this by designing our own interface that gathers
+players' intentions and perceptions in real-time
+(Section~\ref{sec:interface}).
+%
+As with other highly subjective phenomena like
+sarcasm~\citep{gonzalez-ibanez_identifying_2011,bamman_contextualized_2015},
+sentiment~\citep{pang2008opinion} and framing~\citep{greene2009more},
+the intention to deceive is reflective on someone's internal state.
+%
+Having individuals provide their own labels for their internal state
+is essential as third party annotators could not accurately access
+it~\citep{chang_dont_2020-1}.
+
+Most importantly, our gracious players have allowed this language data
+to be released in accordance with \abr{irb} authorized anonymization,
+encouraging further work on the strategic use of deception in
+long-lasting relations.\footnote{Data available at
+  \url{http://go.umd.edu/diplomacy_data} and as part of ConvoKit
+  \url{http://convokit.cornell.edu}.}
+
+\section{Broader Applicability}
+
+This differs from previous work that does not follow the expert-generated paradigm.  
+%
+The most prominent past work on Diplomacy in the \abr{nlp} community, \citep{niculaelinguistic}, did not collect their data and thus could not release it to the public.  
+%
+This hampers follow-up applications of the research; a believable Diplomacy-playing (and speaking) bot cannot be trained if the raw language data is redacted and shuffled.  
+%
+We believe this work can set a paradigm for work outside of Diplomacy, and even \abr{nlp}; the interface created for this project, as well as the pre and post-game user surveys can be modifying for any conversational task.  
+%
+Most importantly, building a relationship with data generators elevates the standard of the data and guarantees its liberal distribution.  
+%
+Further work is necessary in codifying data standards---Show Your Data, not only your Work\footnote{\citep{dodge2019show}}.

@@ -1,0 +1,128 @@
+% colors
+\definecolor{mycolor}{HTML}{9EE6FF}
+
+% Shortcuts
+\newcommand{\dan}[0]{\abr{dan}}
+\newcommand{\lstm}[0]{\abr{lstm}}
+\newcommand{\gru}[0]{\abr{gru}}
+\newcommand{\qa}[0]{\abr{qa}}
+\newcommand{\mt}[0]{\abr{mt}}
+\newcommand{\qb}[0]{\abr{qb}}
+\newcommand{\ngram}[0]{$n$-gram}
+\newcommand{\nlp}[0]{\abr{nlp}}
+\newcommand{\iaa}[0]{\abr{iaa}}
+\newcommand{\nq}[0]{\abr{nq}}
+\newcommand{\squad}{\textsc{sq}{\small u}\textsc{ad}}
+\newcommand{\quac}{\textsc{q}{\small u}\textsc{ac}}
+\newcommand{\coqa}{\textsc{c}{\small o}\textsc{qa}}
+\newcommand{\conll}{\textsc{c}{\small o}\textsc{nll}}
+\newcommand{\cove}{\textsc{c}{\small o}\textsc{v}{\small e}}
+\newcommand{\elmo}{\textsc{elm}{\small o}}
+\newcommand{\fone}{$F_1$}
+\newcommand{\tfidf}{\abr{tf-idf}}
+\newcommand{\rnn}{\abr{rnn}}
+\newcommand{\qanta}{\abr{qanta}}
+\newcommand{\trec}{\abr{trec}}
+\newcommand{\bleu}{\abr{bleu}}
+\newcommand{\entity}[1] {\uline{#1}}
+
+%Diplomacy
+\newcommand{\autofig}[1]{denis_proposal/sections/diplomacy/auto_fig/#1}
+\newcommand{\figfile}[1]{denis_proposal/figures/#1}
+%\newcommand{\figfile}[1]{denis_proposal/sections/diplomacy/figures/#1}
+\newcommand{\alie}{\textsc{actual lie}}
+\newcommand{\slie}{\textsc{suspected lie}}
+\newcommand{\player}[1]{\underline{#1}}
+\newcommand{\totalnumber}{17,289}
+\newcommand{\wordlist}{Harbingers}
+
+
+%MultiDoGo
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{Gray}{gray}{0.95}
+\newcolumntype{a}{>{\columncolor{Gray}}c}
+\newcommand\BibTeX{B\textsc{ib}\TeX}
+\newcommand{\multiwoz}{\texttt{MultiWOZ}\xspace}
+\newcommand{\multidogo}{\texttt{MultiDoGO}\xspace}
+
+%InterSpeech
+\newcommand{\asr}{\textsc{asr}}
+\newcommand{\unk}{<\textit{unk}>}
+
+\newcommand{\name} {\abr{canard}}
+
+
+%ContraCAT
+\newcommand{\coref}{\textsc{cr}}
+\newcommand{\nmt}{\textsc{nmt}}
+\newcommand{\cat}{\textit{cat}}
+\newcommand{\stepone}{Markable Detection}
+\newcommand{\steptwo}{Coreference Resolution}
+\newcommand{\stepthree}{Language Translation}
+\newcommand{\contracat}{Contra\textsc{cat}}
+
+% Functions
+\newcommand{\norm}[1]{| #1 |}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+\newcommand{\feat}[1]{{\small \texttt{#1}}}
+\newcommand{\act}[1]{{\small \texttt{#1}}}
+\newcommand{\gem}[1]{\mbox{\textsc{gem}}}
+\newcommand{\abr}[1]{\textsc{#1}}
+\newcommand{\camelabr}[2]{{\small #1}{\textsc{#2}}}
+\newcommand{\abrcamel}[2]{{\textsc #1}{\small{#2}}}
+\newcommand{\grammar}[1]{{\color{red} #1}}
+\newcommand{\explain}[2]{\underbrace{#2}_{\mbox{\footnotesize{#1}}}}
+\newcommand{\dir}[1]{\mbox{Dir}(#1)}
+\newcommand{\bet}[1]{\mbox{Beta}(#1)}
+\newcommand{\py}[1]{\mbox{\textsc{py}}(#1)}
+\newcommand{\td}[2]{\mbox{\textsc{TreeDist}}_{#1} \left( #2 \right)}
+\newcommand{\yield}[1]{\mbox{\textsc{Yield}} \left( #1 \right)}
+\newcommand{\mult}[1]{\mbox{Mult}( #1)}
+\newcommand{\wn}{\textsc{WordNet}}
+\newcommand{\twentynews}{\textsc{20news}}
+\newcommand{\g}{\, | \,}
+\newcommand{\Gam}[1]{\Gamma \left( \textstyle #1 \right)}
+\newcommand{\LG}[1]{\log \Gamma \left( \textstyle #1 \right)}
+\newcommand{\Pois}[1]{\mbox{Poisson}(#1)}
+\newcommand{\pcfg}[3]{#1_{#2 \rightarrow #3}}
+\newcommand{\grule}[2]{#1 \rightarrow #2}
+\newcommand{\kl}[2]{D_{\mbox{\textsc{KL}}} \left( #1 \,||\, #2 \right)}
+\newcommand{\iemph}[1]{\textit{#1}}
+
+\newcommand{\digambig}[1]{\Psi \left( #1 \right) }
+\newcommand{\digam}[1]{\Psi \left( \textstyle #1 \right) }
+\newcommand{\ddigam}[1]{\Psi' \left( \textstyle #1 \right) }
+\newcommand{\tbsp}{\rule{0pt}{18pt}} %used to get a vertical distance after \hline
+\renewcommand{\baselinestretch}{2}
+
+\setlength{\textwidth}{5.9in}
+\setlength{\textheight}{9in}
+\setlength{\topmargin}{-.50in}
+%\setlength{\topmargin}{0in}    %use this setting if the printer makes the the top margin 1/2 inch instead of 1 inch
+\setlength{\oddsidemargin}{.55in}
+\setlength{\parindent}{.4in}
+\pagestyle{empty}
+
+% Comments
+\newcommand{\hidetext}[1]{}
+\newcommand{\ignore}[1]{}
+
+\newcommand{\todo}[1]{\textcolor{red}{{\bf TODO: #1}}}
+
+\ifcomment
+  \newcommand{\pinaforecomment}[3]{\colorbox{#1}{\parbox{.8\linewidth}{#2: #3}}}
+\else
+  \newcommand{\pinaforecomment}[3]{}
+\fi
+\newcommand{\jbgcomment}[1]{\pinaforecomment{red}{JBG}{#1}}
+\newcommand{\dpcomment}[1]{\pinaforecomment{blue}{Denis}{#1}}
+
+\newcommand*{\TakeFourierOrnament}[1]{{%
+      \fontencoding{U}\fontfamily{futs}\selectfont\char#1}}
+\newcommand*{\danger}{\TakeFourierOrnament{66}}
+\newcommand\cmark {\textcolor{green}{\ding{52}~}}
+\newcommand\cmarktight {\textcolor{green}{\ding{52}}}
+\newcommand\xmark {\textcolor{red}{\ding{55}~}}
+\newcommand\xmarktight {\textcolor{red}{\ding{55}}}
+\newcommand\dmark {\textcolor{yellow}{\danger}}
+\newcommand{\challenge}{adversarially authored}

@@ -1,0 +1,44 @@
+\section{Defining Question-In-Context Rewrites  \label{sec:pp_task}}
+
+%\todo{example in a figure .. in intro}
+
+%In this section, we define the task of question-in-context rewriting.
+%\jbgcomment{Connect this with whatever example you're using}
+
+%We formally define our task for describing our experiments in Section~\ref{sec:expr}.  
+%
+We formally define the task of question-in-context rewriting
+(de-contextualization).
+%
+Given a conversation topic $t$ and a history $H$ of $m-1$ turns, 
+each turn $k$ is a question $q_i$ and an answer $a_i$;
+the task is to generate a rewrite $q'_m$ for the next question $q_m$
+based on $H$.
+%
+Since $q_m$ is part of the conversation, its meaning often involves
+references to parts of its preceding history.
+%
+A valid rewrite $q'_m$ should be self-contained: a correct answer
+to $q'_m$ by itself is a correct answer to $q_m$ combined with the
+question's preceding history $H$.
+
+Figure~\ref{fig:example_convo} shows the assumptions of \abr{cqa} and
+how they are made explicit in rewrites.
+%
+The first question omits the title of the page (Anna Vissi), the
+second question omits the answer to the first question (replacing both
+Anna Vissi and her husband with the pronoun ``they''), and the last
+question adds a scalar implicature that must be resolved.
+
+%% The example in  shows three instances
+%% of the rewriting task, one for each question. For example, Question 2 in 
+%% our formulation would be: $q_m$ is \textit{``did they have any children?''},
+%% $H$ is [\textit{``Anna Vissi'', ``1983-1989: Collaboration with Nikos Karvelas'', ``what happened in 1983?'', "In May 1983, she married Nikos Karvelas, a composer"}]
+%% and  the output $q'_m$ is \textit{``did Anna Vissi and Nikos Karvelas have any children together?''}.
+
+%% To compare the outputs of different models for task, we compute the
+%% \textsc{bleu} score~\cite{papineni2002bleu} between the hypothesis rewrites
+%% produced by different models and the respective human-authored reference rewrites.
+
+%already resolved.
+%\jbgcomment{premature to introduce BLEU here}

@@ -1,0 +1,95 @@
+\chapter{Using Experts for Design}
+
+\input{denis_proposal/sections/contracat/10-intro}
+\input{denis_proposal/sections/contracat/20-background}
+\input{denis_proposal/sections/contracat/30-motivation}
+\input{denis_proposal/sections/contracat/40-pipeline}
+\input{denis_proposal/sections/contracat/50-model}
+\input{denis_proposal/sections/contracat/60-adversarial}
+\input{denis_proposal/sections/contracat/70-augmentation}
+\input{denis_proposal/sections/contracat/80-dataset}
+\input{denis_proposal/sections/contracat/90-summary}
+
+
+
+
+
+
+\begin{comment}
+\subsection{Implementation}
+
+Imagine a hypothetical coreference pipeline that generates a pronoun in a target language, as illustrated in Table~\ref{tab:corefpipeline}.
+%
+\textbf{First}, markables (entities that can be referred to by pronouns) are tagged in the source sentence (we restrict ourselves to concrete entities as we wish to detect gender). 
+%
+Then, the subset of animate entities are detected, and human entities are separated from other animate ones (since \textit{it} cannot refer to a human entity).
+%
+\textbf{Second}, coreferences are then resolved in the source language. This entails handling phenomena such as world knowledge, pleonastic \textit{it}, and event references.  
+%
+\textbf{Third}, the pronoun is translated into the target language. This requires selecting the correct gender given the referent (if there is one), and selecting the correct grammatical case for the target context (e.g., accusative, if the pronoun is the grammatical object in the target language sentence).
+
+%Thus, the
+This idealized pipeline would produce the correct pronoun in the target language. The coreference steps resembles, e.g., the rules-based approach implemented in Stanford Core\textsc{nlp}'s CorefAnnotator~\citep{raghunathan2010multi,lee2011stanford}. However, \nmt{} models are currently unable to decouple each individual step of this pipeline. We propose to isolate each of these phenomenon through targeted examples.
+
+
+\begin{table}[t]
+	\small
+	\centering
+	\begin{tabular}{p{4cm} p{7cm} }
+		\textbf{Template Target} & \textbf{Example} \\
+		\hline
+		
+		\noalign{\vskip 2mm} 
+		\textbf{Priors} & \\
+		Grammatical Role & The \emph{\textbf{cat}} ate the \emph{\textbf{egg}}. It (egg or cat?) was big. \\
+		Order & I stood in front of the \emph{\textbf{cat}} and the \emph{\textbf{dog}}. It (egg or cat?)) was big. \\
+		Verb & Wow! She unlocked it. \\
+		\hline
+		
+		\noalign{\vskip 2mm} 
+		\textbf{\stepone{}} & \\
+		
+		Filter Humans & The \textit{\textbf{cat}}  and the \textit{actress} were happy. However it was happier.  \\
+		\hline
+		
+		\noalign{\vskip 2mm} 
+		\textbf{\steptwo{}} & \\
+		Lexical Overlap & The \textit{\textbf{cat}} ate the apple and the \textit{owl} drank the water. It (cat) ate the apple quickly. \\
+		World Knowledge & The \textit{\textbf{cat}} ate the \textit{cookie}. It (cat) is hungry. \\
+		Pleonastic it & The \emph{cat} ate the \emph{sausage}. It was raining. \\
+		Event Reference  & The \emph{cat} ate the \emph{carrot}. It came as a surprise. \\
+		\hline
+		
+		\noalign{\vskip 2mm} 
+		\textbf{\stepthree{}} & \\
+		Antecedent Gender &
+		I saw a \textit{\textbf{cat}}. It was big. 
+		$\rightarrow$
+		\newline
+		Ich habe eine Katze gesehen. Sie (cat) \dots.
+	\end{tabular}
+	\caption{Template examples targeting different \coref{} steps and substeps. 
+		% We used sets of associated nouns, i.e.,, \{dog, cat, pig, ...\} for Animals.
+		% is this important here? In any case, it is not clear 
+		For German, we create three versions with \emph{er}, \emph{sie}, or \emph{es} as different translations of \emph{it}.
+		% For the German translation we created three versions of the template with \emph{er}, \emph{sie}, or \emph{es} as different translations of \emph{it}. 
+		% For consistency with how our model is trained, sentences are separated by $<$SEP$>$.
+		% moved this to Model
+	}
+	\label{tab:templates}
+\end{table}
+
+We will use a Transformer for all experiments and train a sentence-level model as a baseline.
+%
+We will incorporate contextual information into the model by concatenating consecutive sentences~\citep{tiedemann2017neural}.   
+%
+Training examples can be modified by prepending the previous sentence on the source and target side;  the previous sentence is separated from the main sentence with a special token $<$SEP$>$. 
+%
+This applies to ContraPro and ContraCAT. We will train a concatenation Transformer on OpenSubtitles2018 data prepared in this way. 
+\end{comment}
+
+
+
+
+
+

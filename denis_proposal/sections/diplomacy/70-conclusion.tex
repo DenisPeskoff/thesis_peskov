@@ -1,0 +1,72 @@
+% intro
+\section{Conclusion}
+\label{sec:conclusion}
+
+In Dante's \textit{Inferno}, the ninth circle of Hell---a fate worse
+even than that reserved for murderers---is for betrayers.
+%
+Dante asks Count Ugolino to name his betrayer, which leads him to say:
+\begin{quote}
+  but if my words can be the seed to bear \\
+  the fruit of infamy for this betrayer \\
+  who feeds my hunger, then I shall speak---in tears~\citep[Canto XXXIII]{dante-95}
+\end{quote}
+Similarly, we ask victims to expose their betrayers in the game of
+Diplomacy.
+%
+The seeds of players' negotiations and deceit could, we hope, yield fruit to help
+others: understanding multi-party negotiation and protecting Internet
+users.
+
+While we ignore nuances of the game board to keep our work general, 
+Diplomacy is also a rich, multi-agent strategic environment;
+\citep{paquette-19} ignore Diplomacy's rich language to build bots
+that only move pieces around the board.
+%
+An exciting synthesis would incorporate deception and language
+generation into an agent's policy; our data would help train such agents.
+%
+Beyond playing against humans, playing with a human in the loop
+(\textsc{hitl}) resembles designs for cybersecurity
+threats~\citep{cranor2008framework},
+annotation~\citep{branson2010visual}, and language
+alteration~\citep{wallace2019trick}.
+%
+Likewise, our lie-detection models can help a user \emph{in the
+  moment} better decide whether they are being deceived~\citep{lai-20}.
+%
+Computers can meld their attention to detail and nigh infinite memory to
+humans' grasp of social interactions and nuance to forge a more
+discerning player.
+
+Beyond a silly board game, humans often need help verifying claims are
+true when evaluating health information~\citep{xie-09}, knowing when to
+take an e-mail at face value~\citep{jagatic-07}, or evaluating breaking
+news~\citep{hassan-17}.
+%
+Building systems to help information consumers become more discerning
+and suspicious in low-stakes settings like online Diplomacy are the
+seeds that will bear the fruits of interfaces and machine learning
+tools necessary for a safer and more robust Internet ecosystem.
+
+In contrast to Chapter~\ref{ch:unspecialized} and Chapter~\ref{ch:hybrid}, this dataset is created exclusively with expert users, in this case Diplomacy players.  
+%
+While there are quality differences even within a verified pool of community-of-interest, only one out of 80 users did not actively participate in the experiment.  
+%
+In contrast over 10\% of the data was duplicated by crowd-sourced workers in Chapter~\ref{ch:hybrid}.
+%
+Additionally, we find the \textit{generated} data to be thoughtful, clever, and sometimes even funny, which are adjectives that seldom apply to large-scale \nlp{} datasets.  
+%
+Both the \textit{generation} and \textit{annotation} for this task would not be possible without experts.  
+
+From this work, we conclude that a reliance on experts creates novel and reliable datasets.  
+%
+A limitation of this work is that this Diplomacy work can be extended to other conversational areas of \nlp{}.  
+%
+Machine translation is an unrelated field of \nlp{} rife for novel, high skill-level tasks.  
+%
+In Chapter~\ref{ch:proposal}, we propose to create another expert-dependent task to show the generalizability of our findings.  
+%
+We will see if a large crowd-sourced dataset, WikiData, provides higher quality predictions than automatically created embeddings for this task. 
+%
+In the process, we will demonstrate that complicated types of annotation are more akin to generation, and depend on reliable annotators.  

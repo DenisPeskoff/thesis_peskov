@@ -1,0 +1,56 @@
+\chapter{Proposed Work}
+
+\input{denis_proposal/sections/adaptation/10-intro}
+\input{denis_proposal/sections/adaptation/20-background}
+\input{denis_proposal/sections/adaptation/30-motivation}
+\input{denis_proposal/sections/adaptation/40-wikidata}
+\input{denis_proposal/sections/adaptation/50-embeddings}
+\input{denis_proposal/sections/adaptation/60-evaluation}
+
+
+
+
+
+
+
+
+
+
+\begin{comment}
+Modulation is important for translation being understandable in a target language.  
+%
+While studied in linguistics, this topic that has not been seriously studied by the Natural Language Processing community, despite having numerous downstream applications.   
+%
+One such downstream application, Question Answering, has been done through machine learning~\citep{iyyer-14b, rajpurkar-16, dunn-17, reddy-18, kwiatkowski-19, DBLP:journals/corr/abs-1904-04792}.  
+%
+But, most of the existing corpora are in English. 
+%
+ Machine translation has been used to extend this task to other languages~\citep{lewis2019mlqa, artetxe2019xquad}. 
+ %
+  However, literally translating a question referencing Named Entities does not necessarily make a question relevant through a cultural lens.  
+  %
+  We propose a method that can automatically find appropriate named entities across countries through \textit{human-interpretable} changes in WikiData features.  
+
+Analyzing WikiData, we note a discrepancy in coverage of Germans and Americans.  Filtering by the country of citizenship we observe 295,820 Americans but only 46,081 Germans.  
+%
+This imbalance is significant but has enough Germans for our methodology.
+%
+As WikiData is a maintained resource, there is room for future additional coverage.  
+
+This approach can be used for other countries.  For example, there are X Russian and Y Chinese nationals in WikiData.  
+
+An approach like TyDi~\citep{tydiqa} generates natural questions in a language.  However, this is starting from scratch and relying on users to generate questions.  Given that we have known past quality questions from SQuAD, can we modulate, rather than literally generating them in an another language?  
+
+We plug these named entities into X to improve downstream question answering.  We compare our sentences to the translated questions in XQuAD (or maybe MLQA).  Qualitative and quantitative analysis (question answering accuracy).   TBD Named entities are key.  How much we can improve question answering in target language?  
+
+We need to decide between machine reading or answer selection. 
+
+Cultural backgrounds have to be accounted for to achieve accurate and broadly-applicable machine translation.  Word embeddings from parallel corpora fail to adequately select candidates, since the named entities are translated literally.  
+
+A popular method for creating word embeddings is MUSE.  Interestingly, named entities that occur in both German and English, occur next to different words.  
+
+Nearest neighbors for Merkel in German are bundeskanzlerin, schäuble, and stoiber, which are all closely related in German politics.  In contrast, Merkel in English includes sarkozy, hollande, and erdoğan, who are not involved in German politics.  We see this pattern occur with an American politician: in English, Obama is close to Biden and McCain.  In German, Truman, Nixon, and Putin are thrown into the mix!  
+
+Additionally, we explore multilingual alignment.  Visualization of word embeddings in a monolingual context works as expected.  But, visualizing English and German together leads to a clustering of words by language, rather than by subject matter.  German and English are isomorphic and aligning the embeddings of the two languages solves this issue.  
+\end{comment}
+

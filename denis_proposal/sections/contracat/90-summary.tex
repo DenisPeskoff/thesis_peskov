@@ -1,0 +1,28 @@
+\section{Recap}
+
+In this work, we study how and to what extent \coref{} is handled in context-aware \nmt{}. 
+%
+This work shows that standard challenge sets can easily be manipulated with adversarial attacks that cause dramatic drops in performance, suggesting that \nmt{} uses a set of heuristics to solve the complex task of \coref{}. 
+%
+Attempting to diagnose the underlying reasons, we propose targeted templates which systematically test the different aspects necessary for \coref{}. 
+%
+This analysis shows that while some type of \coref{} such as pleonastic and event \coref{} are handled well, \nmt{} does not solve the task in an abstract sense. 
+%
+We also propose a data augmentation approach to see if simple data modifications can improve model accuracy. 
+%
+This methodology illustrates the dependence on data by models, and strengthen our claims that low-cost data generation techniques are approximating rather than \textit{solving} \nlp{} tasks.  
+%
+Having identified limitations in existing models, we argue for concrete data extensions for coreference resolution.  
+%
+This methodology---creating an adverserial dataset which tests the understanding of a model---can be applied to most \nlp{} tasks.  
+
+This project introduces using an expert, in this case a native German speaker, in designing the dataset.  
+%
+However, we use templates rather than experts to scale the size of the dataset.
+%
+While we can create \textit{large} datasets, they end up (literally) formulaic.  
+%
+\textit{Solving} tasks like coreference, rather than just noting shortcomings of current datasets, will require building complex and nuanced datasets that allow a model to earn the edge cases of the task.  
+%
+These datasets will ultimately have to built by somebody familiar with the task:
+can we use only experts for data generation?

@@ -1,0 +1,23 @@
+\label{ch:contracat}
+
+Genuinely varied, realistic data is necessary to create models that are robust to minor variations. 
+%
+However, equally robust evaluation methodologies are important in ascertaining the quality of the data. 
+%
+Current methods focus on quantitative assessments that may inadvertently assess the \textit{annotation}, but not the \textit{generation}, quality of a dataset.  
+%
+Since most datasets are evaluated on the same types of data---\squad{} test data is comparable to the training data---the linguistic variation of a dataset is not readily captured by standard quantitative metrics like accuracy or \fone{}.
+%
+Furthermore, a model that has memorized several key answers upon which it is then tested is not necessarily \textit{learning}.
+%
+A raw analysis of data overlap appears this is at least partially a problem~\citep{lewis2020question}.    
+%
+Datasets meant to effectively and robustly evaluate trained datasets can determine how much of a problem this poses \textit{ex-post-facto}.  
+
+As one solution to this limitation, Checklist~\citep{ribeiro2020beyond} created a task-agnostic methodology for testing NLP models.
+%
+We extend this work to a specific task: testing coreference~\citep{soon2001machine} in machine translation. %in Section~\ref{sec:propeval}.  
+%
+The dataset we create is \textit{designed} by experts: specifically native German and native English speakers, even if the methodology is \textit{automated}.
+%
+While a similar dataset of the same size could be created without knowledge of either language, the templates used as test data would prove be nonsensical or unnatural.  
